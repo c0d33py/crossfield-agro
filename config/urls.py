@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
+from django.http import HttpResponse
 from django.urls import include, path
 
 from apps.blog.sitemaps import sitemaps as blog_sitemaps
@@ -25,7 +26,14 @@ sitemaps = {
 
 admin_url = getattr(settings, "ADMIN_URL", "admin/")
 
+
+def healthz(_request):
+    """Liveness probe for the platform load balancer — no DB, no templates."""
+    return HttpResponse("ok", content_type="text/plain")
+
+
 urlpatterns = [
+    path("healthz/", healthz, name="healthz"),
     path(admin_url, admin.site.urls),
     # Catalog
     path("products/", include("apps.products.urls", namespace="products")),

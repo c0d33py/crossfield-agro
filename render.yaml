@@ -1,0 +1,100 @@
+# Render blueprint — provisions web + worker + Postgres + Redis and deploys
+# on every push to main once the repo is connected in the Render dashboard.
+# Docs: https://render.com/docs/blueprint-spec
+databases:
+  - name: crossfield-db
+    plan: free
+    databaseName: crosfield_agro
+    user: crosfield
+
+services:
+  # ---- Redis (cache + Celery broker) ----
+  - type: redis
+    name: crossfield-redis
+    plan: free
+    ipAllowList: []        # only reachable from Render services
+    maxmemoryPolicy: noeviction
+
+  # ---- Web (gunicorn) ----
+  - type: web
+    name: crossfield-web
+    runtime: python
+    plan: free
+    region: oregon
+    branch: main
+    buildCommand: "./deploy/render-build.sh"
+    startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 60"
+    healthCheckPath: /healthz/
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.production
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true          # Render generates a strong random value
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        sync: false                   # set to <your-service>.onrender.com after first deploy
+      - key: SITE_DOMAIN
+        sync: false                   # e.g. crossfield-web.onrender.com
+      - key: SITE_SCHEME
+        value: https
+      - key: ADMIN_URL
+        generateValue: true           # secret admin path; read it from the dashboard
+      - key: DATABASE_URL
+        fromDatabase:
+          name: crossfield-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: crossfield-redis
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: crossfield-redis
+          property: connectionString
+      - key: CELERY_TASK_ALWAYS_EAGER
+        value: "False"
+
+  # ---- Celery worker (async side effects: emails, PDFs, sitemap, stock) ----
+  - type: worker
+    name: crossfield-worker
+    runtime: python
+    plan: free
+    region: oregon
+    branch: main
+    buildCommand: "./deploy/render-build.sh"
+    startCommand: "celery -A config worker --loglevel=info --concurrency=2"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.production
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: DJANGO_SECRET_KEY
+        fromService:
+          type: web
+          name: crossfield-web
+          envVarKey: DJANGO_SECRET_KEY
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "localhost"            # worker serves no HTTP; placeholder keeps settings happy
+      - key: DATABASE_URL
+        fromDatabase:
+          name: crossfield-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: crossfield-redis
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: crossfield-redis
+          property: connectionString
+      - key: CELERY_TASK_ALWAYS_EAGER
+        value: "False"

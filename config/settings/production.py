@@ -25,13 +25,18 @@ X_FRAME_OPTIONS = "DENY"
 # Admin URL is moved off /admin/ — see config/urls.py
 ADMIN_URL = env("ADMIN_URL", default="staff-portal-do-not-leave-default/")
 
-# Email — SMTP via env
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = env("EMAIL_HOST")
-EMAIL_PORT = env.int("EMAIL_PORT", default=587)
-EMAIL_HOST_USER = env("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = True
+# Email — SMTP via env. Defaults keep boot working before SMTP is configured;
+# with no EMAIL_HOST set, mail falls back to the console backend (logged, not sent)
+# so a fresh deploy comes up healthy instead of crashing on a missing secret.
+EMAIL_HOST = env("EMAIL_HOST", default="")
+if EMAIL_HOST:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_PORT = env.int("EMAIL_PORT", default=587)
+    EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+    EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+    EMAIL_USE_TLS = True
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="noreply@crosfieldagro.com.pk")
 
 # Sentry
