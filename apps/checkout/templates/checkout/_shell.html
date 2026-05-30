@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}{% block step_title %}Checkout{% endblock %} | Crosfield Agro Pakistan{% endblock %}
+{% block meta_description %}Complete your order with Crosfield Agro Pakistan.{% endblock %}
+{% block canonical %}<meta name="robots" content="noindex,follow">{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li><a href="{% url 'cart:detail' %}">Cart</a></li>
+    <li aria-current="page">Checkout</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">Checkout</p>
+    <h1>{% block step_heading %}Place your order.{% endblock %}</h1>
+    <p>{% block step_intro %}A secure 3-step process. Prices and stock are revalidated before payment.{% endblock %}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <ol class="steps" aria-label="Checkout progress">
+      <li class="{% if step == 1 %}is-current{% elif step > 1 %}is-done{% endif %}"
+          {% if step == 1 %}aria-current="step"{% endif %}>
+        <span class="steps__number">1</span> Address
+      </li>
+      <li class="{% if step == 2 %}is-current{% elif step > 2 %}is-done{% endif %}"
+          {% if step == 2 %}aria-current="step"{% endif %}>
+        <span class="steps__number">2</span> Review
+      </li>
+      <li class="{% if step == 3 %}is-current{% elif step > 3 %}is-done{% endif %}"
+          {% if step == 3 %}aria-current="step"{% endif %}>
+        <span class="steps__number">3</span> Payment
+      </li>
+    </ol>
+
+    {% if messages %}
+      <div role="status" aria-live="polite" style="margin-bottom: 24px;">
+        {% for message in messages %}
+          <div class="card card--accent" style="border-color: #B0211D;">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="grid grid--3" style="grid-template-columns: 2fr 1fr; align-items: start;">
+      <div>
+        {% block step_body %}{% endblock %}
+      </div>
+
+      <aside>
+        {% block step_aside %}
+          <div class="card card--accent">
+            <p class="eyebrow">Order summary</p>
+            <ul style="list-style: none; padding: 0; margin: 0 0 16px;">
+              {% for line in summary.lines %}
+                <li style="padding: 8px 0; border-bottom: 1px solid var(--color-rule); display: flex; justify-content: space-between; gap: 12px;">
+                  <span>
+                    {{ line.item.product.name }}
+                    {% if line.item.variant %}<br><span class="help">{{ line.item.variant.name }}</span>{% endif %}
+                    <span class="help"> · {{ line.item.quantity }}</span>
+                  </span>
+                  <span style="font-variant-numeric: tabular-nums; font-weight: 600;">{{ summary.currency }} {{ line.line_total }}</span>
+                </li>
+              {% endfor %}
+            </ul>
+            <table class="commerce-table" style="margin: 0;">
+              <tr><td>Subtotal</td><td class="numeric">{{ summary.currency }} {{ summary.subtotal }}</td></tr>
+              <tr><td>Shipping</td><td class="numeric help">Quoted on dispatch</td></tr>
+              <tr><td>Tax</td><td class="numeric help">As applicable</td></tr>
+              <tfoot>
+                <tr>
+                  <td class="grand-total">Total</td>
+                  <td class="numeric grand-total">{{ summary.currency }} {{ summary.subtotal }}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <div class="card" style="margin-top: 16px;">
+            <p class="eyebrow">Need to change something?</p>
+            <p><a href="{% url 'cart:detail' %}">← Back to cart</a></p>
+            <p class="help" style="margin-top: 12px;">
+              You'll get one final review screen with edit links before you pay.
+              Payment is confirmed asynchronously via your bank or wallet.
+            </p>
+          </div>
+        {% endblock %}
+      </aside>
+    </div>
+  </div>
+</section>
+{% endblock %}

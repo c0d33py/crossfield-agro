@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Media Center | Crosfield Agro Pakistan{% endblock %}
+{% block meta_description %}Press releases and media coverage of Crosfield Agro Pakistan — for journalists, analysts, and stakeholders.{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Media Center",
+  "url": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}",
+  "description": "Press releases and media coverage of Crosfield Agro Pakistan."
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li aria-current="page">Media Center</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">Newsroom</p>
+    <h1>Media Center.</h1>
+    <p>Press releases issued by Crosfield Agro Pakistan and selected external coverage. Media enquiries via the contact form, routed to "Media / Press."</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid grid--2" style="align-items: start;">
+      <div>
+        <p class="eyebrow">Latest press releases</p>
+        {% if releases %}
+          <ul style="list-style: none; padding: 0; margin: 16px 0 0;">
+            {% for release in releases %}
+              <li style="padding: 16px 0; border-bottom: 1px solid var(--color-rule);">
+                <p class="help" style="margin: 0 0 4px;">{{ release.issued_on|date:"j F Y" }}</p>
+                <h3 style="margin: 0 0 8px; font-size: 1.125rem;">
+                  <a href="{{ release.get_absolute_url }}" style="color: var(--color-green-900);">
+                    {{ release.title }}
+                  </a>
+                </h3>
+                <p style="margin: 0;">{{ release.summary }}</p>
+              </li>
+            {% endfor %}
+          </ul>
+          <p style="margin-top: 16px;"><a href="{% url 'media_center:press-list' %}">All press releases →</a></p>
+        {% else %}
+          <p class="help">No press releases yet.</p>
+        {% endif %}
+      </div>
+
+      <div>
+        <p class="eyebrow">In the press</p>
+        {% if coverage %}
+          <ul style="list-style: none; padding: 0; margin: 16px 0 0;">
+            {% for item in coverage %}
+              <li style="padding: 16px 0; border-bottom: 1px solid var(--color-rule);">
+                <p class="help" style="margin: 0 0 4px;">{{ item.publication }} · {{ item.published_on|date:"j F Y" }}</p>
+                <h3 style="margin: 0 0 8px; font-size: 1.125rem;">
+                  <a href="{{ item.url }}" target="_blank" rel="noopener nofollow" style="color: var(--color-green-900);">
+                    {{ item.title }} ↗
+                  </a>
+                </h3>
+                {% if item.excerpt %}<p style="margin: 0;">{{ item.excerpt }}</p>{% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+          <p style="margin-top: 16px;"><a href="{% url 'media_center:coverage-list' %}">All coverage →</a></p>
+        {% else %}
+          <p class="help">No coverage indexed yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--surface">
+  <div class="container" style="display: grid; gap: 16px; justify-items: start;">
+    <p class="eyebrow">Media enquiries</p>
+    <h2>For journalists, analysts, and stakeholders.</h2>
+    <p class="lead" style="max-width: 60ch;">
+      Use the contact form and select "Media / Press". We respond within 3–5 business days.
+      For urgent requests, route through your established Crosfield contact.
+    </p>
+    <a class="button button-primary" href="{% url 'contact:form' %}">Contact Media Relations</a>
+  </div>
+</section>
+{% endblock %}

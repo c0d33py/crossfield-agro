@@ -1,0 +1,54 @@
+{% extends "admin/base_site.html" %}
+{% load admin_urls %}
+
+{% block title %}Mark orders as shipped{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">Home</a>
+  &rsaquo; <a href="{% url 'admin:app_list' app_label='orders' %}">Orders</a>
+  &rsaquo; <a href="{% url 'admin:orders_order_changelist' %}">Orders</a>
+  &rsaquo; Mark shipped
+</div>
+{% endblock %}
+
+{% block content %}
+<h1>Mark {{ orders|length }} order{{ orders|length|pluralize }} as shipped</h1>
+
+<p>The tracking number and carrier will be saved into the new <code>SHIPPED</code> event's metadata for each order below.</p>
+
+<ul>
+  {% for order in orders %}
+    <li><strong>{{ order.number }}</strong> — current status: {{ order.get_cached_status_display }}</li>
+  {% endfor %}
+</ul>
+
+<form method="post">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="{{ action }}">
+  {% for order in orders %}
+    <input type="hidden" name="_selected_action" value="{{ order.pk }}">
+  {% endfor %}
+
+  <fieldset class="module aligned">
+    <div class="form-row">
+      <label for="id_tracking_number" class="required">Tracking number:</label>
+      {{ form.tracking_number }}
+      {% for e in form.tracking_number.errors %}<p class="errornote">{{ e }}</p>{% endfor %}
+    </div>
+    <div class="form-row">
+      <label for="id_carrier">Carrier (optional):</label>
+      {{ form.carrier }}
+    </div>
+    <div class="form-row">
+      <label for="id_note">Internal note (optional):</label>
+      {{ form.note }}
+    </div>
+  </fieldset>
+
+  <div class="submit-row">
+    <input type="submit" name="apply" class="default" value="Mark shipped">
+    <a href="{% url 'admin:orders_order_changelist' %}" class="button cancel-link">Cancel</a>
+  </div>
+</form>
+{% endblock %}

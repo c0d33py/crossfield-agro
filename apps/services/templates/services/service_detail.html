@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}{{ offering.seo_title|default:offering.name }} | Crosfield Agro Pakistan{% endblock %}
+{% block meta_description %}{{ offering.seo_description|default:offering.summary|truncatechars:160 }}{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ offering.get_absolute_url }}">{% endblock %}
+
+{% block og %}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ offering.seo_title|default:offering.name }}">
+  <meta property="og:description" content="{{ offering.seo_description|default:offering.summary|truncatechars:160 }}">
+  <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ offering.get_absolute_url }}">
+  <meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "{{ offering.name|escapejs }}",
+  "url": "{{ request.scheme }}://{{ request.get_host }}{{ offering.get_absolute_url }}",
+  "description": "{{ offering.summary|truncatechars:300|escapejs }}",
+  "provider": {
+    "@type": "Organization",
+    "name": "Crosfield Agro Pakistan",
+    "url": "{{ request.scheme }}://{{ request.get_host }}/"
+  },
+  "serviceType": "{{ offering.get_category_display|escapejs }}",
+  "areaServed": "PK"
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li><a href="{% url 'services:list' %}">Services</a></li>
+    <li aria-current="page">{{ offering.name }}</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">{{ offering.get_category_display }}</p>
+    <h1>{{ offering.name }}</h1>
+    <p>{{ offering.summary }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid grid--2" style="align-items: start;">
+      <div>
+        {% if offering.body %}
+          <p class="eyebrow">About this service</p>
+          {{ offering.body|linebreaks }}
+        {% endif %}
+
+        {% if offering.deliverables %}
+          <p class="eyebrow" style="margin-top: 32px;">Deliverables</p>
+          <ul>
+            {% for d in offering.deliverables %}<li>{{ d }}</li>{% endfor %}
+          </ul>
+        {% endif %}
+
+        <dl class="facts" style="margin-top: 32px;">
+          {% if offering.typical_timeline %}<dt>Typical timeline</dt><dd>{{ offering.typical_timeline }}</dd>{% endif %}
+          {% if offering.pricing_model %}<dt>Pricing model</dt><dd>{{ offering.pricing_model }}</dd>{% endif %}
+        </dl>
+      </div>
+
+      <aside>
+        <div class="card card--accent">
+          <p class="eyebrow">Enquire about this service</p>
+          <h3>Talk to us.</h3>
+          <p>Tell us briefly what you're trying to achieve. We'll come back within one business day with next steps.</p>
+
+          {% if messages %}
+            <div role="status" aria-live="polite">
+              {% for message in messages %}
+                <div class="card" style="margin: 16px 0; border-color: var(--color-gold-600);">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <form class="form" method="post" novalidate style="margin-top: 16px;">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+              <div role="alert">{% for e in form.non_field_errors %}<p class="error">{{ e }}</p>{% endfor %}</div>
+            {% endif %}
+
+            <div style="position:absolute; left:-9999px;" aria-hidden="true">{{ form.website }}</div>
+
+            <div>
+              <label for="id_name">Name <span class="required" aria-hidden="true">*</span></label>
+              {{ form.name }}
+              {% for e in form.name.errors %}<p class="error">{{ e }}</p>{% endfor %}
+            </div>
+            <div>
+              <label for="id_email">Email <span class="required" aria-hidden="true">*</span></label>
+              {{ form.email }}
+              {% for e in form.email.errors %}<p class="error">{{ e }}</p>{% endfor %}
+            </div>
+            <div>
+              <label for="id_phone">Phone <span class="help">(optional)</span></label>
+              {{ form.phone }}
+              {% for e in form.phone.errors %}<p class="error">{{ e }}</p>{% endfor %}
+            </div>
+            <div>
+              <label for="id_company">Company</label>
+              {{ form.company }}
+              {% for e in form.company.errors %}<p class="error">{{ e }}</p>{% endfor %}
+            </div>
+            <div>
+              <label for="id_message">Message <span class="required" aria-hidden="true">*</span></label>
+              {{ form.message }}
+              {% for e in form.message.errors %}<p class="error">{{ e }}</p>{% endfor %}
+            </div>
+
+            <button class="button button-primary" type="submit" data-prevent-double-submit>
+              Send Enquiry
+            </button>
+          </form>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_body %}
+<script>
+  document.querySelectorAll('form [data-prevent-double-submit]').forEach(function (btn) {
+    btn.form.addEventListener('submit', function () {
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+    });
+  });
+</script>
+{% endblock %}

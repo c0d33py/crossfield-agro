@@ -1,0 +1,37 @@
+{% extends "core/_page.html" %}
+
+{% block page_body %}
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Who we sell to</p>
+    <h2>Three customer categories.</h2>
+    <div class="grid grid--3" style="margin-top: 32px;">
+      <article class="card card--accent">
+        <h3>Growers &amp; cooperatives</h3>
+        <p>From individual progressive farms to multi-thousand-member cooperatives. Direct supply for high-volume crops.</p>
+      </article>
+      <article class="card card--accent">
+        <h3>Industrial processors</h3>
+        <p>Specialty inputs and contract formulations for industrial customers across food, chemicals, and feed.</p>
+      </article>
+      <article class="card card--accent">
+        <h3>Regional distributors</h3>
+        <p>Established distributors covering Pakistan's provinces and selected export markets.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--surface">
+  <div class="container">
+    <p class="eyebrow">Confidentiality</p>
+    <h2>Client identities on request.</h2>
+    <p class="lead" style="max-width: 70ch;">
+      We don't publish a client logo wall by default — many of our buyers consider their
+      supplier relationships commercially sensitive. References are available to qualified
+      buyers under NDA as part of supplier qualification.
+    </p>
+    <a class="button button-secondary" href="{% url 'contact:form' %}">Request references</a>
+  </div>
+</section>
+{% endblock %}

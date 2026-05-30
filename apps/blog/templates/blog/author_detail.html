@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{{ author.name }} | Blog | Crosfield Agro Pakistan{% endblock %}
+{% block meta_description %}Posts by {{ author.name }}{% if author.role %} ({{ author.role }}){% endif %} on the Crosfield Agro Pakistan blog.{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ author.get_absolute_url }}">{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "{{ author.name|escapejs }}",
+  {% if author.role %}"jobTitle": "{{ author.role|escapejs }}",{% endif %}
+  "url": "{{ request.scheme }}://{{ request.get_host }}{{ author.get_absolute_url }}",
+  "worksFor": {"@type": "Organization", "name": "Crosfield Agro Pakistan"}
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li><a href="{% url 'blog:list' %}">Blog</a></li>
+    <li aria-current="page">{{ author.name }}</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">Author</p>
+    <h1>{{ author.name }}</h1>
+    {% if author.role %}<p>{{ author.role }}</p>{% endif %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid grid--3" style="grid-template-columns: 1fr 2fr; align-items: start;">
+      <aside>
+        {% if author.photo %}
+          <img src="{{ author.photo.url }}" alt="{{ author.name }}"
+               width="240" height="240"
+               style="border-radius: 12px; width: 100%; aspect-ratio: 1/1; object-fit: cover;">
+        {% endif %}
+        {% if author.bio %}
+          <p style="margin-top: 16px;">{{ author.bio }}</p>
+        {% endif %}
+      </aside>
+
+      <div>
+        <p class="eyebrow">Posts by {{ author.name }}</p>
+        {% if posts %}
+          <div class="grid grid--2" style="margin-top: 16px;">
+            {% for post in posts %}
+              {% include "blog/_card.html" with post=post %}
+            {% endfor %}
+          </div>
+
+          {% if page_obj.has_other_pages %}
+            <nav class="pagination" aria-label="Pagination"
+                 style="margin-top: 32px; display: flex; gap: 16px; align-items: center;">
+              {% if page_obj.has_previous %}<a rel="prev" href="?page={{ page_obj.previous_page_number }}">← Previous</a>{% endif %}
+              <span class="help">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+              {% if page_obj.has_next %}<a rel="next" href="?page={{ page_obj.next_page_number }}">Next →</a>{% endif %}
+            </nav>
+          {% endif %}
+        {% else %}
+          <p>No posts yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

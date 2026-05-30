@@ -1,0 +1,40 @@
+{% extends "core/_page.html" %}
+
+{% block page_body %}
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Management system certifications</p>
+    <h2>Audited annually. Reissued continuously.</h2>
+    <div class="grid grid--3" style="margin-top: 32px;">
+      <article class="card card--accent">
+        <h3>ISO 9001 — Quality</h3>
+        <p>Quality management system covering manufacturing, laboratory, and customer support.</p>
+        <p class="help">Externally audited; recertification cycle current.</p>
+      </article>
+      <article class="card card--accent">
+        <h3>ISO 14001 — Environment</h3>
+        <p>Environmental management system covering emissions, effluent, waste, and resource use.</p>
+        <p class="help">Annual surveillance; full recertification on schedule.</p>
+      </article>
+      <article class="card card--accent">
+        <h3>ISO 45001 — Health &amp; Safety</h3>
+        <p>Occupational health and safety management system covering process and personal safety.</p>
+        <p class="help">Site-level audits; recordable incident rate published annually.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--surface">
+  <div class="container">
+    <p class="eyebrow">Product &amp; regulatory</p>
+    <h2>Product-level approvals.</h2>
+    <p class="lead" style="max-width: 70ch;">
+      Individual products carry Pakistan-level regulatory registrations as required by product
+      class. Specific approvals and certificate copies are provided to customers on request as
+      part of supplier qualification.
+    </p>
+    <a class="button button-secondary" href="{% url 'contact:form' %}">Request a certificate pack</a>
+  </div>
+</section>
+{% endblock %}

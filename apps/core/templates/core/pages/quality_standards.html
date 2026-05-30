@@ -1,0 +1,41 @@
+{% extends "core/_page.html" %}
+
+{% block page_body %}
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Quality framework</p>
+    <h2>From inbound material to final release.</h2>
+    <div class="grid grid--4" style="margin-top: 32px;">
+      <article class="card"><h3>1. Inbound testing</h3><p>Every incoming lot tested against specification; certificate of analysis archived against the lot ID.</p></article>
+      <article class="card"><h3>2. Process control</h3><p>In-process checkpoints with documented tolerances; deviations halt the batch automatically.</p></article>
+      <article class="card"><h3>3. Lot release</h3><p>Final-release testing on every batch before it leaves the plant; release authority rests with QA, not production.</p></article>
+      <article class="card"><h3>4. Traceability</h3><p>Lot codes link finished product back to raw material lot, operator, equipment, and shift.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--surface">
+  <div class="container">
+    <p class="eyebrow">Laboratory</p>
+    <h2>In-house instrumentation, not outsourced testing.</h2>
+    <p class="lead" style="max-width: 70ch;">
+      Wet chemistry, instrumental analysis (HPLC, GC, AAS), and physical testing are all in-house.
+      That gives us release cycles measured in hours, not days, and an internal feedback loop
+      between QA and production.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Customer audits</p>
+    <h2>You're welcome on site.</h2>
+    <p class="lead" style="max-width: 70ch;">
+      We host customer and second-party audits. Audit packs — QMS documentation, recent
+      surveillance reports, capability data — are prepared on request as part of supplier
+      qualification.
+    </p>
+    <a class="button button-secondary" href="{% url 'contact:form' %}">Schedule an audit</a>
+  </div>
+</section>
+{% endblock %}

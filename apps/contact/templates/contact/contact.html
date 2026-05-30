@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us | Crosfield Agro{% endblock %}
+{% block meta_description %}Reach Crosfield Agro — sales, technical, parts and after-sales. Lahore head office plus seven branches across Pakistan and offices in four countries abroad.{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Crosfield Agro",
+  "url": "{{ request.scheme }}://{{ request.get_host }}/",
+  "contactPoint": [
+    {"@type":"ContactPoint","contactType":"sales","areaServed":["PK","US","UZ","NG","AF"],"availableLanguage":["en","ur"]},
+    {"@type":"ContactPoint","contactType":"technical support","areaServed":"PK","availableLanguage":["en","ur"]},
+    {"@type":"ContactPoint","contactType":"customer service","areaServed":"PK","availableLanguage":["en","ur"]}
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li aria-current="page">Contact</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">Get in touch</p>
+    <h1>Contact us.</h1>
+    <p>Sales reply within one business day. Technical and agronomy questions routed to a named specialist who knows your crop, region and equipment.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid grid--2" style="align-items: start;">
+      <div>
+        {% if messages %}
+          <div role="status" aria-live="polite" style="margin-bottom: 16px;">
+            {% for message in messages %}
+              <div class="card card--accent">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <form class="form" method="post" novalidate>
+          {% csrf_token %}
+
+          {% if form.non_field_errors %}
+            <div role="alert">{% for e in form.non_field_errors %}<p class="error">{{ e }}</p>{% endfor %}</div>
+          {% endif %}
+
+          <div style="position:absolute; left:-9999px;" aria-hidden="true">{{ form.website }}</div>
+
+          <div>
+            <label for="id_name">Name <span class="required" aria-hidden="true">*</span></label>
+            {{ form.name }}
+            {% for e in form.name.errors %}<p class="error">{{ e }}</p>{% endfor %}
+          </div>
+          <div>
+            <label for="id_email">Email <span class="required" aria-hidden="true">*</span></label>
+            {{ form.email }}
+            {% for e in form.email.errors %}<p class="error">{{ e }}</p>{% endfor %}
+          </div>
+          <div>
+            <label for="id_phone">Phone <span class="help">(optional, Pakistani number)</span></label>
+            {{ form.phone }}
+            {% for e in form.phone.errors %}<p class="error">{{ e }}</p>{% endfor %}
+          </div>
+          <div>
+            <label for="id_company">Company / organisation</label>
+            {{ form.company }}
+            {% for e in form.company.errors %}<p class="error">{{ e }}</p>{% endfor %}
+          </div>
+          <div>
+            <label for="id_enquiry_type">Enquiry type <span class="required" aria-hidden="true">*</span></label>
+            {{ form.enquiry_type }}
+            {% for e in form.enquiry_type.errors %}<p class="error">{{ e }}</p>{% endfor %}
+          </div>
+          <div>
+            <label for="id_message">Message <span class="required" aria-hidden="true">*</span></label>
+            {{ form.message }}
+            {% for e in form.message.errors %}<p class="error">{{ e }}</p>{% endfor %}
+          </div>
+
+          <button class="button button-primary" type="submit" data-prevent-double-submit>Send Enquiry</button>
+        </form>
+      </div>
+
+      <aside>
+        <div class="card card--accent">
+          <p class="eyebrow">Head Office — Lahore</p>
+          <p>Opposite Areeb Petrol Pump, Near NAB Office, Main Multan Road, Thokar Niaz Baig, Lahore.</p>
+          <dl class="facts">
+            <dt>Phone</dt><dd><a href="tel:+923008403154">+92 300 8403154</a></dd>
+            <dt>Email</dt><dd><a href="mailto:info@crosfield.co">info@crosfield.co</a></dd>
+            <dt>Hours</dt><dd>Mon–Sat, 09:00–18:00 PKT · 24/7 after-sales</dd>
+          </dl>
+        </div>
+
+        <div class="card" style="margin-top: 24px;">
+          <p class="eyebrow">Response times</p>
+          <ul style="margin: 0; padding-left: 1.25em;">
+            <li>Sales / quotes — 1 business day</li>
+            <li>Technical support — 1–2 business days</li>
+            <li>Field service call-outs — same week, region-dependent</li>
+            <li>Careers — see <a href="{% url 'careers:list' %}">careers</a></li>
+          </ul>
+        </div>
+
+        <div class="card" style="margin-top: 24px;">
+          <p class="eyebrow">Find a branch</p>
+          <p>Sales, parts and service across Pakistan, plus offices in four countries abroad.</p>
+          <p><a href="#branches">Jump to branch directory ↓</a></p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section id="branches" class="section section--surface">
+  <div class="container">
+    <p class="eyebrow">Branch directory</p>
+    <h2>Pakistan branches.</h2>
+    <p class="lead" style="max-width: 70ch;">
+      Eight sales-and-service locations across Punjab, KPK and Sindh — call the
+      branch closest to you for stock checks, demos, parts and on-site service.
+    </p>
+
+    <div class="grid grid--3" style="margin-top: 32px;">
+      <article class="card">
+        <h3>Multan</h3>
+        <p>Office #1, Garden Market, Bahawalpur Bypass, Multan.</p>
+        <dl class="facts">
+          <dt>Phone</dt><dd><a href="tel:+923000605139">+92 300 0605 139</a></dd>
+          <dt>Email</dt><dd><a href="mailto:info@crosfield.co">info@crosfield.co</a></dd>
+        </dl>
+      </article>
+
+      <article class="card">
+        <h3>Sargodha</h3>
+        <p>Jamia Mehmudia Road, Ibn-e-Sina Market, Kenchi Mor, Sargodha.</p>
+        <dl class="facts">
+          <dt>Phone</dt><dd><a href="tel:+923000605157">+92 300 0605 157</a></dd>
+          <dt>Email</dt><dd><a href="mailto:info@crosfield.co">info@crosfield.co</a></dd>
+        </dl>
+      </article>
+
+      <article class="card">
+        <h3>Chiniot</h3>
+        <p>Al Meezan Kanta, Lahore Road, Near Sir Muradwala Bypass, Rasheedabad Chungi 3, Chiniot.</p>
+        <dl class="facts">
+          <dt>Phone</dt><dd><a href="tel:+923000605149">+92 300 0605 149</a></dd>
+          <dt>Email</dt><dd><a href="mailto:info@crosfield.co">info@crosfield.co</a></dd>
+        </dl>
+      </article>
+
+      <article class="card">
+        <h3>Jhang</h3>
+        <p>Pioneer Laser Land Leveler, Near Truck Ada, Jhang–Sargodha Road, Jhang.</p>
+        <dl class="facts">
+          <dt>Phone</dt><dd><a href="tel:+923008403214">+92 300 8403 214</a></dd>
+          <dt>Email</dt><dd><a href="mailto:info@crosfield.co">info@crosfield.co</a></dd>
+        </dl>
+      </article>
+
+      <article class="card">
+        <h3>Dera Ismail Khan</h3>
+        <p>Model Farm Service Center, Near Bab Dera, Bannu Road, Dera Ismail Khan.</p>
+        <dl class="facts">
+          <dt>Phone</dt><dd><a href="tel:+923000605133">+92 300 0605 133</a></dd>
+          <dt>Email</dt><dd><a href="mailto:info@crosfield.co">info@crosfield.co</a></dd>
+        </dl>
+      </article>
+
+      <article class="card">
+        <h3>Moro, Sindh</h3>
+        <p>Office #2, Solar Market, Near Suzuki Showroom, Main Hyderabad Road, Moro, Sindh.</p>
+        <dl class="facts">
+          <dt>Phone</dt><dd><a href="tel:+923073000338">+92 307 3000 338</a></dd>
+          <dt>Email</dt><dd><a href="mailto:info@crosfield.co">info@crosfield.co</a></dd>
+        </dl>
+      </article>
+
+      <article class="card">
+        <h3>Shahdadpur, Sindh</h3>
+        <p>Shahdadpur, District Sanghar, Sindh.</p>
+        <dl class="facts">
+          <dt>Phone</dt><dd><a href="tel:+923000605153">+92 300 0605 153</a></dd>
+          <dt>Email</dt><dd><a href="mailto:info@crosfield.co">info@crosfield.co</a></dd>
+        </dl>
+      </article>
+
+      <article class="card">
+        <h3>Lahore Factory</h3>
+        <p>22 KM Main Multan Road, Chota Mohanwal, Badhupura Stop, Lahore.</p>
+        <dl class="facts">
+          <dt>Phone</dt><dd><a href="tel:+923000605153">+92 300 0605 153</a></dd>
+          <dt>Email</dt><dd><a href="mailto:info@crosfield.co">info@crosfield.co</a></dd>
+        </dl>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">International offices</p>
+    <h2>Beyond Pakistan.</h2>
+    <div class="grid grid--3" style="margin-top: 32px;">
+      <article class="card card--accent">
+        <h3>United States</h3>
+        <p>40 Rabro Drive, Hauppauge, NY 11788.</p>
+        <dl class="facts">
+          <dt>Phone</dt><dd><a href="tel:+19175826300">+1 (917) 582-6300</a></dd>
+          <dt>Email</dt><dd><a href="mailto:info@crosfield.co">info@crosfield.co</a></dd>
+        </dl>
+      </article>
+
+      <article class="card card--accent">
+        <h3>Uzbekistan</h3>
+        <p>Sarykul Street, Building 10/1, Flat 1, Tashkent.</p>
+        <dl class="facts">
+          <dt>Telegram</dt><dd><a href="tel:+998949897064">+998 94 989 70 64</a></dd>
+          <dt>Email</dt><dd><a href="mailto:info@crosfield.co">info@crosfield.co</a></dd>
+        </dl>
+      </article>
+
+      <article class="card card--accent">
+        <h3>Nigeria &amp; Afghanistan</h3>
+        <p>Equipment supply and project support across West Africa and Afghanistan — coordinated through the Lahore head office.</p>
+        <dl class="facts">
+          <dt>Email</dt><dd><a href="mailto:info@crosfield.co">info@crosfield.co</a></dd>
+        </dl>
+      </article>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_body %}
+<script>
+  document.querySelectorAll('form [data-prevent-double-submit]').forEach(function (btn) {
+    btn.form.addEventListener('submit', function () {
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+    });
+  });
+</script>
+{% endblock %}

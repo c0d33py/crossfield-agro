@@ -1,0 +1,59 @@
+{% extends "core/_page.html" %}
+{% load static %}
+
+{% block page_body %}
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Management team</p>
+    <h2>The people accountable for results.</h2>
+    <p class="lead" style="max-width: 70ch;">
+      A small leadership group runs Crosfield day to day — long-tenured operators
+      with deep roots in Pakistani agriculture and direct experience of the
+      machinery, irrigation and field work the company supplies.
+    </p>
+
+    <div class="grid grid--3 team-grid" style="margin-top: 48px;">
+      <article class="team-card">
+        <img class="team-card__photo" src="{% static 'core/img/team/ahmad-nawaz.jpg' %}"
+             alt="Portrait of Ahmad Nawaz" loading="lazy" width="320" height="320">
+        <h3>Ahmad Nawaz</h3>
+        <p class="team-card__role">Director</p>
+        <p>
+          Founded Crosfield Agro in 2003 and led its expansion to a network of
+          more than 50 branches and offices across five countries. Sets long-range
+          strategy and oversees the international business.
+        </p>
+      </article>
+
+      <article class="team-card">
+        <img class="team-card__photo" src="{% static 'core/img/team/teepu-sheikh.jpg' %}"
+             alt="Portrait of Teepu Sheikh" loading="lazy" width="320" height="320">
+        <h3>Teepu Sheikh</h3>
+        <p class="team-card__role">Managing Partner</p>
+        <p>
+          Holds an ownership stake and is responsible for major corporate
+          decisions, group growth and management of the company's international
+          operations across the US, Uzbekistan, Nigeria and Afghanistan.
+        </p>
+      </article>
+
+      <article class="team-card">
+        <img class="team-card__photo" src="{% static 'core/img/team/muhammad-imran.jpg' %}"
+             alt="Portrait of Muhammad Imran" loading="lazy" width="320" height="320">
+        <h3>Muhammad Imran</h3>
+        <p class="team-card__role">Chief Executive Officer</p>
+        <p>
+          Trained in business administration before moving into agriculture, and
+          has been central to scaling the operation into the branch network it
+          runs today. Owns day-to-day execution and customer outcomes.
+        </p>
+      </article>
+    </div>
+
+    <p style="margin-top: 32px;" class="help">
+      Detailed bios and direct contact routing available on request via
+      <a href="{% url 'contact:form' %}">our contact form</a>.
+    </p>
+  </div>
+</section>
+{% endblock %}

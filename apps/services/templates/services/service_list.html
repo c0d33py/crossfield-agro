@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Services | Crosfield Agro Pakistan{% endblock %}
+{% block meta_description %}Agronomy support, contract manufacturing, formulation development, logistics — services that complement Crosfield Agro Pakistan's product portfolio.{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Services",
+  "url": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}",
+  "description": "Services that complement Crosfield Agro Pakistan's product portfolio."
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li aria-current="page">Services</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">Catalog</p>
+    <h1>Services.</h1>
+    <p>
+      Beyond shipping product — agronomy support for growers, contract manufacturing
+      and formulation development for industrial customers, and logistics arrangements
+      for high-volume buyers.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    {% for category, offerings in grouped.items %}
+      <div style="margin-bottom: 48px;">
+        <p class="eyebrow">{{ category }}</p>
+        <div class="grid grid--2" style="margin-top: 16px;">
+          {% for offering in offerings %}
+            <article class="card card--accent">
+              <h3><a href="{{ offering.get_absolute_url }}">{{ offering.name }}</a></h3>
+              <p>{{ offering.summary }}</p>
+              {% if offering.typical_timeline %}<p class="help">Typical timeline: {{ offering.typical_timeline }}</p>{% endif %}
+              <p style="margin-top: 12px;"><a href="{{ offering.get_absolute_url }}">Details &amp; enquiry →</a></p>
+            </article>
+          {% endfor %}
+        </div>
+      </div>
+    {% empty %}
+      <p>No services published yet.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section section--surface">
+  <div class="container" style="display: grid; gap: 16px; justify-items: start;">
+    <p class="eyebrow">Have a custom requirement?</p>
+    <h2>Tell us about it.</h2>
+    <p class="lead" style="max-width: 60ch;">
+      Many of our service engagements start as a conversation. Sketch the requirement
+      and we'll come back with a scope, a timeline, and a price.
+    </p>
+    <a class="button button-primary" href="{% url 'contact:form' %}">Contact Sales</a>
+  </div>
+</section>
+{% endblock %}

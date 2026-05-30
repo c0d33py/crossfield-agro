@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Processing Payment | Crosfield Agro Pakistan{% endblock %}
+{% block meta_description %}Processing payment for your order.{% endblock %}
+{% block canonical %}<meta name="robots" content="noindex,follow">{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li aria-current="page">Processing payment</li>
+  </ol>
+</nav>
+
+<section class="section">
+  <div class="container" style="max-width: 720px;">
+    <div class="card card--accent" style="text-align: center; padding: 48px 32px;">
+      <div class="empty-state__icon" aria-hidden="true">⏳</div>
+      <p class="eyebrow">Processing</p>
+      <h1>Processing your payment…</h1>
+      <p class="lead">
+        We're waiting for your bank or wallet to confirm payment for order
+        <strong>{{ order.number }}</strong>.
+      </p>
+
+      <div style="margin: 32px 0; display: flex; justify-content: center; gap: 12px; align-items: center;">
+        <span class="status-pill status-pill--{{ order.current_status }}" id="status-pill">
+          {{ order.get_cached_status_display }}
+        </span>
+        <span class="help" id="status-detail">Checking…</span>
+      </div>
+
+      <p class="help">
+        This page updates automatically. You don't need to refresh. If it stays in
+        "Processing" for more than 5 minutes, our reconciliation job will catch up
+        within the hour — and you'll get an email either way.
+      </p>
+
+      <noscript>
+        <p style="margin-top: 24px;">
+          <a class="button button-secondary" href="{% url 'orders:detail' order.uuid %}">
+            View order status (JavaScript disabled)
+          </a>
+        </p>
+      </noscript>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_body %}
+<script>
+  (function () {
+    var statusUrl = "{% url 'orders:status' order.uuid %}";
+    var confirmUrl = "{% url 'orders:confirmation' order.uuid %}";
+    var detailUrl  = "{% url 'orders:detail' order.uuid %}";
+    var pill = document.getElementById('status-pill');
+    var detail = document.getElementById('status-detail');
+    var attempts = 0;
+
+    function update(status, display) {
+      if (pill) {
+        pill.className = 'status-pill status-pill--' + status;
+        pill.textContent = display || status;
+      }
+    }
+
+    function poll() {
+      attempts++;
+      fetch(statusUrl, {credentials: 'same-origin'})
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          update(d.status, d.status.charAt(0).toUpperCase() + d.status.slice(1).replace('_', ' '));
+          if (d.status === 'paid' || d.status === 'processing' ||
+              d.status === 'shipped' || d.status === 'delivered' || d.status === 'completed') {
+            detail.textContent = 'Confirmed — redirecting…';
+            window.location = confirmUrl;
+          } else if (d.status === 'payment_failed' || d.status === 'cancelled') {
+            detail.innerHTML = 'Payment was not completed. <a href="' + detailUrl + '">View order</a>.';
+          } else if (attempts > 150) {
+            // ~5 minutes at 2s intervals — stop and tell user to come back later
+            detail.innerHTML = 'Still processing. We\'ll email you when payment confirms. <a href="' + detailUrl + '">View order</a>.';
+          } else {
+            detail.textContent = 'Waiting for confirmation (attempt ' + attempts + ')…';
+            setTimeout(poll, 2000);
+          }
+        })
+        .catch(function () {
+          detail.textContent = 'Connection issue, retrying…';
+          setTimeout(poll, 4000);
+        });
+    }
+    poll();
+  })();
+</script>
+{% endblock %}

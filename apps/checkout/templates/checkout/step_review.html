@@ -1,0 +1,81 @@
+{% extends "checkout/_shell.html" %}
+
+{% block step_title %}Review — Step 2 of 3{% endblock %}
+{% block step_heading %}Review your order.{% endblock %}
+{% block step_intro %}Confirm everything looks right. Use the edit links to make changes before payment.{% endblock %}
+
+{% block step_body %}
+<div class="card" style="margin-bottom: 24px;">
+  <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap;">
+    <p class="eyebrow" style="margin: 0;">Contact</p>
+    <a href="{% url 'checkout:address' %}" class="help">Edit</a>
+  </div>
+  <p style="margin-top: 8px;"><strong>{{ checkout.email }}</strong></p>
+</div>
+
+<div class="card" style="margin-bottom: 24px;">
+  <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap;">
+    <p class="eyebrow" style="margin: 0;">Shipping address</p>
+    <a href="{% url 'checkout:address' %}" class="help">Edit</a>
+  </div>
+  <address style="font-style: normal; margin-top: 8px; line-height: 1.6;">
+    <strong>{{ checkout.shipping.name }}</strong><br>
+    {{ checkout.shipping.line1 }}<br>
+    {% if checkout.shipping.line2 %}{{ checkout.shipping.line2 }}<br>{% endif %}
+    {{ checkout.shipping.city }} {{ checkout.shipping.postal_code }}<br>
+    {{ checkout.shipping.country }}<br>
+    <span class="help">{{ checkout.shipping.phone }}</span>
+  </address>
+</div>
+
+<div class="card" style="margin-bottom: 24px;">
+  <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap;">
+    <p class="eyebrow" style="margin: 0;">Billing address</p>
+    <a href="{% url 'checkout:address' %}" class="help">Edit</a>
+  </div>
+  {% if checkout.billing_same %}
+    <p class="help" style="margin-top: 8px;">Same as shipping</p>
+  {% else %}
+    <address style="font-style: normal; margin-top: 8px; line-height: 1.6;">
+      <strong>{{ checkout.billing.name }}</strong><br>
+      {{ checkout.billing.line1 }}<br>
+      {% if checkout.billing.line2 %}{{ checkout.billing.line2 }}<br>{% endif %}
+      {{ checkout.billing.city }} {{ checkout.billing.postal_code }}<br>
+      {{ checkout.billing.country }}
+    </address>
+  {% endif %}
+</div>
+
+<div class="card">
+  <p class="eyebrow">Line items</p>
+  <table class="commerce-table" style="margin: 8px 0 0;">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th class="numeric">Qty</th>
+        <th class="numeric">Unit</th>
+        <th class="numeric">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for line in summary.lines %}
+        <tr>
+          <td data-label="Product">
+            <strong>{{ line.item.product.name }}</strong>
+            {% if line.item.variant %}<br><span class="help">{{ line.item.variant.name }}</span>{% endif %}
+            <p class="help" style="margin: 4px 0 0;">SKU: {{ line.item.variant.sku|default:line.item.product.sku }}</p>
+          </td>
+          <td class="numeric" data-label="Qty">{{ line.item.quantity }}</td>
+          <td class="numeric" data-label="Unit">{{ summary.currency }} {{ line.unit_price }}</td>
+          <td class="numeric" data-label="Total">{{ summary.currency }} {{ line.line_total }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div style="display: flex; gap: 12px; justify-content: space-between; flex-wrap: wrap; margin-top: 24px;">
+  <a class="button button-secondary" href="{% url 'checkout:address' %}">← Edit address</a>
+  <a class="button button-primary" href="{% url 'checkout:payment' %}">Continue to payment →</a>
+</div>
+{% endblock %}

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{ invoice.document_type }} {{ invoice.number }}</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 16mm 22mm 16mm;
+    @bottom-left { content: "Crosfield Agro"; font-family: sans-serif; font-size: 9pt; color: #6b7575; }
+    @bottom-right { content: "Page " counter(page) " of " counter(pages); font-family: sans-serif; font-size: 9pt; color: #6b7575; }
+  }
+  body { font-family: "Helvetica", "Arial", sans-serif; font-size: 10pt; color: #0F2E1F; line-height: 1.4; }
+  h1, h2, h3 { font-family: "Georgia", "Times", serif; color: #0F2E1F; margin: 0; }
+  .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #0F2E1F; padding-bottom: 16px; margin-bottom: 24px; }
+  .brand { font-family: "Georgia", serif; font-size: 22pt; color: #0F2E1F; }
+  .brand strong { color: #B8901E; font-weight: 700; }
+  .brand__logo { max-height: 56px; width: auto; display: block; }
+  .brand__sub { font-size: 9pt; color: #6b7575; margin-top: 8px; }
+  .doc-meta { text-align: right; }
+  .doc-type { font-size: 13pt; font-weight: bold; color: #0F2E1F; text-transform: uppercase; letter-spacing: 0.05em; }
+  .doc-number { font-family: monospace; font-size: 11pt; margin-top: 4px; }
+  .doc-status { display: inline-block; margin-top: 6px; padding: 3px 8px; font-size: 8pt; font-weight: bold; text-transform: uppercase; letter-spacing: 0.08em; border-radius: 2px; }
+  .doc-status--paid { background: #1F6B3D; color: #fff; }
+  .doc-status--unpaid { background: #B8901E; color: #fff; }
+
+  .parties { display: flex; gap: 24px; margin-bottom: 24px; }
+  .party { flex: 1; }
+  .party h3 { font-size: 9pt; text-transform: uppercase; letter-spacing: 0.08em; color: #6b7575; margin-bottom: 6px; }
+  .party p { margin: 2px 0; }
+
+  .order-meta { display: flex; gap: 24px; padding: 12px; background: #f4f6f4; border-radius: 3px; margin-bottom: 24px; font-size: 9.5pt; }
+  .order-meta dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; flex: 1; }
+  .order-meta dt { color: #6b7575; }
+  .order-meta dd { margin: 0; font-weight: bold; }
+
+  table.lines { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  table.lines th { text-align: left; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7575; border-bottom: 1px solid #0F2E1F; padding: 8px 6px; }
+  table.lines th.numeric, table.lines td.numeric { text-align: right; }
+  table.lines td { border-bottom: 1px solid #e7ede8; padding: 10px 6px; vertical-align: top; }
+  table.lines td .sku { font-size: 8.5pt; color: #6b7575; margin-top: 2px; }
+
+  .totals { width: 50%; margin-left: auto; }
+  .totals tr td { padding: 6px 8px; border: none; }
+  .totals tr td.label { color: #6b7575; }
+  .totals tr td.amount { text-align: right; font-variant-numeric: tabular-nums; }
+  .totals tr.grand td { border-top: 2px solid #0F2E1F; font-size: 12pt; font-weight: bold; padding-top: 10px; }
+
+  .footer-note { margin-top: 32px; padding: 12px; background: #f4f6f4; border-left: 3px solid #B8901E; font-size: 9pt; color: #4a5450; }
+  .small { font-size: 8.5pt; color: #6b7575; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    {% if logo_uri %}
+      <img class="brand__logo" src="{{ logo_uri }}" alt="Crosfield Agro">
+    {% else %}
+      <div class="brand">Crosfield <strong>Agro</strong></div>
+    {% endif %}
+    <div class="brand__sub">Multan Road, Thokar Niaz Baig, Lahore · info@crosfield.co</div>
+  </div>
+  <div class="doc-meta">
+    <div class="doc-type">{{ invoice.document_type }}</div>
+    <div class="doc-number">{{ invoice.number }}</div>
+    {% if invoice.is_paid %}
+      <div class="doc-status doc-status--paid">Paid</div>
+    {% else %}
+      <div class="doc-status doc-status--unpaid">Unpaid</div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="parties">
+  <div class="party">
+    <h3>Bill to</h3>
+    <p><strong>{{ order.billing_address.name }}</strong></p>
+    <p>{{ order.billing_address.line1 }}</p>
+    {% if order.billing_address.line2 %}<p>{{ order.billing_address.line2 }}</p>{% endif %}
+    <p>{{ order.billing_address.city }} {{ order.billing_address.postal_code }}</p>
+    <p>{{ order.billing_address.country }}</p>
+    <p class="small" style="margin-top: 6px;">{{ order.email }}</p>
+  </div>
+  <div class="party">
+    <h3>Ship to</h3>
+    <p><strong>{{ order.shipping_address.name }}</strong></p>
+    <p>{{ order.shipping_address.line1 }}</p>
+    {% if order.shipping_address.line2 %}<p>{{ order.shipping_address.line2 }}</p>{% endif %}
+    <p>{{ order.shipping_address.city }} {{ order.shipping_address.postal_code }}</p>
+    <p>{{ order.shipping_address.country }}</p>
+    {% if order.shipping_address.phone %}<p class="small" style="margin-top: 6px;">{{ order.shipping_address.phone }}</p>{% endif %}
+  </div>
+</div>
+
+<div class="order-meta">
+  <dl>
+    <dt>Order #</dt><dd>{{ order.number }}</dd>
+    <dt>Order date</dt><dd>{{ order.created_at|date:"j F Y" }}</dd>
+    <dt>Issued</dt><dd>{{ invoice.issued_at|date:"j F Y" }}</dd>
+    <dt>Currency</dt><dd>{{ order.currency }}</dd>
+  </dl>
+</div>
+
+<table class="lines">
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th class="numeric">Qty</th>
+      <th class="numeric">Unit</th>
+      <th class="numeric">Line total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in order.items.all %}
+      <tr>
+        <td>
+          <strong>{{ item.product_name }}</strong>
+          <div class="sku">SKU: {{ item.sku }}</div>
+        </td>
+        <td class="numeric">{{ item.quantity }}</td>
+        <td class="numeric">{{ order.currency }} {{ item.unit_price }}</td>
+        <td class="numeric">{{ order.currency }} {{ item.line_total }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<table class="totals">
+  <tr><td class="label">Subtotal</td><td class="amount">{{ order.currency }} {{ order.subtotal }}</td></tr>
+  <tr><td class="label">Shipping</td><td class="amount">{{ order.currency }} {{ order.shipping_total }}</td></tr>
+  <tr><td class="label">Tax</td><td class="amount">{{ order.currency }} {{ order.tax_total }}</td></tr>
+  {% if order.discount_total %}
+    <tr><td class="label">Discount</td><td class="amount">-{{ order.currency }} {{ order.discount_total }}</td></tr>
+  {% endif %}
+  <tr class="grand"><td>Grand total</td><td class="amount">{{ order.currency }} {{ order.grand_total }}</td></tr>
+</table>
+
+{% if not invoice.is_paid %}
+  <div class="footer-note">
+    <strong>This is a proforma invoice.</strong>
+    A tax invoice will be re-issued with the same number once payment is confirmed.
+    {% if cod_payment %}
+      Please keep {{ order.currency }} {{ order.grand_total }} in cash ready for the courier on delivery.
+    {% endif %}
+  </div>
+{% endif %}
+
+<div class="footer-note" style="border-left-color: #6b7575;">
+  Thank you for your business. Questions about this invoice? Email
+  <strong>info@crosfield.co</strong> with the invoice number.
+</div>
+
+</body>
+</html>

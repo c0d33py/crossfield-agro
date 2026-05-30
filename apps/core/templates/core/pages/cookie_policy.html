@@ -1,0 +1,29 @@
+{% extends "core/_page.html" %}
+
+{% block page_body %}
+<section class="section">
+  <div class="container" style="max-width: 820px;">
+    <p class="help">Last updated: {% now "F Y" %}</p>
+
+    <h2>What are cookies</h2>
+    <p>Cookies are small text files stored on your device when you visit a website. They let the site remember things like your session and your preferences.</p>
+
+    <h2>What we use</h2>
+    <ul>
+      <li><strong>Strictly necessary</strong> — session cookies that keep you logged in, that remember your cart, and that protect against cross-site request forgery. Cannot be disabled without breaking the site.</li>
+      <li><strong>Functional</strong> — preference cookies that remember choices like language. Set only when you make those choices.</li>
+      <li><strong>Analytics</strong> — aggregate page-view counting that helps us understand which pages are useful. We do not combine analytics data with personally identifying information.</li>
+    </ul>
+
+    <h2>Third parties</h2>
+    <p>If we embed third-party content (e.g. a video, a map), that third party may set its own cookies. We choose providers that respect user privacy.</p>
+
+    <h2>Managing cookies</h2>
+    <p>Your browser lets you block or delete cookies. Blocking strictly-necessary cookies will prevent parts of this site from working — including the cart and the contact form.</p>
+
+    <h2>Changes</h2>
+    <p>We update this policy when we change how we use cookies. The date at the top reflects the latest revision.</p>
+  </div>
+</section>
+{% endblock %}
+{% block page_cta %}{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Track Order | Crosfield Agro Pakistan{% endblock %}
+{% block meta_description %}Track the status of your Crosfield Agro Pakistan order using your order number and email.{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li aria-current="page">Track order</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">Order tracking</p>
+    <h1>Track your order.</h1>
+    <p>Enter your order number to see current status, history, and tracking details.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width: 560px;">
+    <form class="form" method="post" novalidate>
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div role="alert">{% for e in form.non_field_errors %}<p class="error">{{ e }}</p>{% endfor %}</div>
+      {% endif %}
+
+      <div>
+        <label for="id_order_number">Order number <span class="required" aria-hidden="true">*</span></label>
+        {{ form.order_number }}
+        <p class="help">Format: CA-YYYYMMDD-XXXXXX (from your confirmation email).</p>
+        {% for e in form.order_number.errors %}<p class="error">{{ e }}</p>{% endfor %}
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: space-between; flex-wrap: wrap;">
+        <a class="button button-secondary" href="{% url 'contact:form' %}">Need help instead?</a>
+        <button class="button button-primary" type="submit">Track order →</button>
+      </div>
+    </form>
+
+    {% if request.user.is_authenticated %}
+      <p class="help" style="margin-top: 24px; text-align: center;">
+        Signed in? <a href="{% url 'orders:list' %}">See all your orders →</a>
+      </p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

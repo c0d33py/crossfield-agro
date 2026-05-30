@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Media Coverage | Crosfield Agro Pakistan{% endblock %}
+{% block meta_description %}External press coverage of Crosfield Agro Pakistan.{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Media Coverage",
+  "url": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}",
+  "description": "External articles and interviews about Crosfield Agro Pakistan."
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li><a href="{% url 'media_center:index' %}">Media Center</a></li>
+    <li aria-current="page">Coverage</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">In the press</p>
+    <h1>External coverage.</h1>
+    <p>Articles, interviews, and analyses about Crosfield Agro Pakistan.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    {% if coverage %}
+      <ul style="list-style: none; padding: 0; display: grid; gap: 16px;">
+        {% for item in coverage %}
+          <li class="card">
+            <p class="help" style="margin: 0 0 4px;">{{ item.publication }} · {{ item.published_on|date:"j F Y" }}</p>
+            <h2 style="font-size: 1.125rem; margin: 0 0 8px;">
+              <a href="{{ item.url }}" target="_blank" rel="noopener nofollow" style="color: var(--color-green-900);">
+                {{ item.title }} ↗
+              </a>
+            </h2>
+            {% if item.excerpt %}<p style="margin: 0;">{{ item.excerpt }}</p>{% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+
+      {% if page_obj.has_other_pages %}
+        <nav class="pagination" aria-label="Pagination"
+             style="margin-top: 32px; display: flex; gap: 16px; align-items: center;">
+          {% if page_obj.has_previous %}<a rel="prev" href="?page={{ page_obj.previous_page_number }}">← Previous</a>{% endif %}
+          <span class="help">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+          {% if page_obj.has_next %}<a rel="next" href="?page={{ page_obj.next_page_number }}">Next →</a>{% endif %}
+        </nav>
+      {% endif %}
+    {% else %}
+      <p class="help">No coverage indexed yet.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

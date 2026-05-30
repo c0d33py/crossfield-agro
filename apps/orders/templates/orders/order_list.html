@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Your Orders | Crosfield Agro Pakistan{% endblock %}
+{% block meta_description %}Your order history with Crosfield Agro Pakistan.{% endblock %}
+{% block canonical %}<meta name="robots" content="noindex,follow">{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li aria-current="page">Your Orders</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">Account</p>
+    <h1>Your orders.</h1>
+    <p>Every order you've placed with Crosfield Agro Pakistan, with current status and shipment details.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    {% if orders %}
+      <table class="commerce-table" aria-label="Order history">
+        <thead>
+          <tr>
+            <th>Order number</th>
+            <th>Status</th>
+            <th class="numeric">Total</th>
+            <th>Placed</th>
+            <th><span class="visually-hidden">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+            <tr>
+              <td data-label="Order"><code style="font-size: 0.9rem;">{{ order.number }}</code></td>
+              <td data-label="Status">
+                <span class="status-pill status-pill--{{ order.cached_status }}">
+                  {{ order.get_cached_status_display }}
+                </span>
+              </td>
+              <td class="numeric" data-label="Total"
+                  style="font-weight: 600; color: var(--color-green-900);">
+                {{ order.currency }} {{ order.grand_total }}
+              </td>
+              <td data-label="Placed">{{ order.created_at|date:"j M Y" }}</td>
+              <td data-label="View">
+                <a href="{% url 'orders:detail' order.uuid %}" class="button button-ghost"
+                   style="padding: 6px 12px; min-height: 36px;">View →</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-state__icon" aria-hidden="true">📦</div>
+        <h2>No orders yet.</h2>
+        <p>Once you place an order, it'll appear here with its current status and shipment details.</p>
+        <a class="button button-primary" href="{% url 'products:product-list' %}">Browse Products</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_body %}
+<style>
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+</style>
+{% endblock %}

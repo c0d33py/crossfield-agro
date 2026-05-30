@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category.seo_title|default:category.name }} | Crosfield Agro{% endblock %}
+{% block meta_description %}{{ category.seo_description|default:category.description|truncatechars:160 }}{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ category.get_absolute_url }}">{% endblock %}
+
+{% block og %}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ category.seo_title|default:category.name }}">
+  <meta property="og:description" content="{{ category.seo_description|default:category.description|truncatechars:160 }}">
+  <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ category.get_absolute_url }}">
+{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "{{ category.name|escapejs }}",
+  "url": "{{ request.scheme }}://{{ request.get_host }}{{ category.get_absolute_url }}",
+  {% if category.description %}"description": "{{ category.description|truncatechars:300|escapejs }}",{% endif %}
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Products", "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'products:product-list' %}"}{% for c in parent_crumbs %},
+      {"@type": "ListItem", "position": {{ forloop.counter|add:1 }}, "name": "{{ c.name|escapejs }}", "item": "{{ request.scheme }}://{{ request.get_host }}{{ c.get_absolute_url }}"}{% endfor %},
+      {"@type": "ListItem", "position": {{ parent_crumbs|length|add:2 }}, "name": "{{ category.name|escapejs }}", "item": "{{ request.scheme }}://{{ request.get_host }}{{ category.get_absolute_url }}"}
+    ]
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li><a href="{% url 'products:product-list' %}">Products</a></li>
+    {% for c in parent_crumbs %}
+      <li><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>
+    {% endfor %}
+    <li aria-current="page">{{ category.name }}</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">
+      {% if category.parent %}
+        <a href="{{ category.parent.get_absolute_url }}">{{ category.parent.name }}</a> ·
+      {% endif %}
+      Category
+    </p>
+    <h1>{{ category.name }}.</h1>
+    {% if category.description %}<p>{{ category.description }}</p>{% endif %}
+  </div>
+</section>
+
+{% if subcategories %}
+<section class="section" style="padding-bottom: 0;">
+  <div class="container">
+    <p class="eyebrow">Sub-categories</p>
+    <div class="subcat-strip">
+      {% for sub in subcategories %}
+        <a class="subcat-strip__tile" href="{{ sub.get_absolute_url }}">
+          <span class="subcat-strip__name">{{ sub.name }}</span>
+          {% if sub.description %}
+            <span class="subcat-strip__hint">{{ sub.description|truncatechars:60 }}</span>
+          {% endif %}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="container">
+    <div class="catalog">
+
+      <!-- Sidebar (same shell as product list) -->
+      <aside class="catalog__sidebar" aria-label="Refine catalogue">
+        <form class="catalog__search" method="get" action="{% url 'products:product-search' %}" role="search">
+          <label for="catalog-search" class="visually-hidden">Search products</label>
+          <input id="catalog-search" type="search" name="q" placeholder="Search products…" autocomplete="off">
+          <button class="button button-primary" type="submit">Search</button>
+        </form>
+
+        <div class="catalog__facet">
+          <h3 class="catalog__facet-title">All categories</h3>
+          <ul class="catalog__cats" role="list">
+            <li>
+              <a href="{% url 'products:product-list' %}"
+                 class="catalog__cat-link">All products</a>
+            </li>
+            {% for c in categories %}
+              <li>
+                <a href="{{ c.get_absolute_url }}"
+                   class="catalog__cat-link {% if active_category and active_category.slug == c.slug %}catalog__cat-link--active{% endif %}">
+                  {{ c.name }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="catalog__facet">
+          <h3 class="catalog__facet-title">Need help?</h3>
+          <p class="help" style="margin: 0 0 8px;">
+            Not sure which kit fits your operation? A field engineer can spec it for you.
+          </p>
+          <a class="button button-secondary" style="width: 100%;" href="{% url 'contact:form' %}">Get a quote</a>
+        </div>
+      </aside>
+
+      <!-- Main grid -->
+      <div class="catalog__main">
+        <div class="catalog__toolbar">
+          <p class="catalog__count">
+            <strong>{{ total }}</strong> product{{ total|pluralize }}
+            in <strong>{{ category.name }}</strong>
+          </p>
+          <form method="get" class="catalog__sort">
+            <label for="sort-select" class="catalog__sort-label">Sort:</label>
+            <select id="sort-select" name="sort" onchange="this.form.submit()">
+              {% for value, label in sort_options %}
+                <option value="{{ value }}" {% if current_sort == value %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+            <noscript><button class="button button-secondary" type="submit">Apply</button></noscript>
+          </form>
+        </div>
+
+        {% if products %}
+          <div class="catalog__grid">
+            {% for product in products %}
+              {% include "products/_product_card.html" with product=product %}
+            {% endfor %}
+          </div>
+
+          {% if page_obj.has_other_pages %}
+            <nav class="pagination" aria-label="Pagination"
+                 style="margin-top: 32px; display: flex; gap: 16px; align-items: center; justify-content: center;">
+              {% if page_obj.has_previous %}
+                <a rel="prev" href="?sort={{ current_sort }}&amp;page={{ page_obj.previous_page_number }}">← Previous</a>
+              {% endif %}
+              <span class="help">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+              {% if page_obj.has_next %}
+                <a rel="next" href="?sort={{ current_sort }}&amp;page={{ page_obj.next_page_number }}">Next →</a>
+              {% endif %}
+            </nav>
+          {% endif %}
+        {% else %}
+          <div class="empty-state">
+            <div class="empty-state__icon" aria-hidden="true">🌾</div>
+            <h2>No products in {{ category.name }} yet.</h2>
+            <p>
+              The catalogue here is being updated.
+              <a href="{% url 'products:product-list' %}">Browse all products</a>
+              or <a href="{% url 'contact:form' %}">contact sales</a> for a manual quote.
+            </p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_body %}
+<style>
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+</style>
+{% endblock %}

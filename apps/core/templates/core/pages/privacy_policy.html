@@ -1,0 +1,49 @@
+{% extends "core/_page.html" %}
+
+{% block page_body %}
+<section class="section">
+  <div class="container" style="max-width: 820px;">
+    <p class="help">Last updated: {% now "F Y" %}</p>
+
+    <h2>What this policy covers</h2>
+    <p>This policy explains what personal information Crosfield Agro Pakistan ("we", "us") collects from visitors to this website, how we use it, who we share it with, and your rights over that information.</p>
+
+    <h2>Information we collect</h2>
+    <ul>
+      <li><strong>Information you provide</strong> — via the contact form (name, email, phone, company, message), via account registration, or in the course of a quote or order.</li>
+      <li><strong>Automatic information</strong> — IP address, browser, device, pages visited, referrer, timestamps. Standard for website operation.</li>
+      <li><strong>Cookies</strong> — see our <a href="{% url 'core:page' slug='cookie-policy' %}">Cookie Policy</a>.</li>
+    </ul>
+
+    <h2>How we use it</h2>
+    <ul>
+      <li>To respond to enquiries and fulfil orders.</li>
+      <li>To operate, maintain, and improve the website.</li>
+      <li>To meet legal and regulatory obligations.</li>
+      <li>For aggregate analytics — never to identify individual users to third parties.</li>
+    </ul>
+
+    <h2>Sharing</h2>
+    <p>We do not sell personal information. We share it only with: service providers under contract who help us run the website, ship product, or process payments; and authorities where required by law.</p>
+
+    <h2>Retention</h2>
+    <p>We keep personal information for as long as needed for the purpose collected and for any regulatory retention period that follows.</p>
+
+    <h2>Your rights</h2>
+    <p>You can request access to, correction of, or deletion of personal information we hold about you. Use the <a href="{% url 'contact:form' %}">contact form</a> with "Other" as the enquiry type.</p>
+
+    <h2>Security</h2>
+    <p>We use industry-standard technical and organisational measures to protect personal information. No internet transmission is fully secure, however.</p>
+
+    <h2>Children</h2>
+    <p>This website is not directed at children. We do not knowingly collect information from anyone under 16.</p>
+
+    <h2>Changes</h2>
+    <p>We may update this policy. Material changes will be announced on this page. The date at the top reflects the latest revision.</p>
+
+    <h2>Contact</h2>
+    <p>Privacy questions: <a href="{% url 'contact:form' %}">contact us</a>.</p>
+  </div>
+</section>
+{% endblock %}
+{% block page_cta %}{% endblock %}

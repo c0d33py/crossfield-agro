@@ -1,0 +1,62 @@
+{% extends "core/_page.html" %}
+
+{% block page_body %}
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">At a glance</p>
+    <h2>Crosfield by the numbers.</h2>
+    <div class="grid grid--4" style="margin-top: 24px;">
+      <article class="card">
+        <h3>30+ years</h3>
+        <p>Continuous work supplying Pakistani farms with machinery and irrigation.</p>
+      </article>
+      <article class="card">
+        <h3>7 PK branches</h3>
+        <p>Sales, service and parts across Punjab, KPK and Sindh.</p>
+      </article>
+      <article class="card">
+        <h3>4 countries abroad</h3>
+        <p>Offices in the United States, Uzbekistan, Nigeria and Afghanistan.</p>
+      </article>
+      <article class="card">
+        <h3>6 product lines</h3>
+        <p>Levelers, tractors, irrigation, seeds, greenhouses, solar.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--surface">
+  <div class="container">
+    <div class="grid grid--2" style="align-items: start;">
+      <div>
+        <p class="eyebrow">What we sell</p>
+        <h2>A line built around the field.</h2>
+        <p>
+          Our catalogue covers the equipment a farm uses through the year: leveling kit before
+          planting, tractors and implements through the season, irrigation that scales from
+          drip lines to centre pivots, hybrid seeds matched to local conditions, greenhouses
+          for protected cropping, and solar systems for pumping and on-farm power.
+        </p>
+        <p>
+          Where it makes sense, components are made locally to keep prices reasonable and
+          spares easy to find. Where it doesn't, we distribute well-supported international
+          brands.
+        </p>
+        <a class="button button-secondary" href="{% url 'products:product-list' %}">Browse the catalogue</a>
+      </div>
+      <div>
+        <p class="eyebrow">Who we sell to</p>
+        <h2>Owner-operators to government projects.</h2>
+        <p>
+          We supply individual farmers and family farms, leveling and tillage contractors,
+          commercial growers and exporters, cooperatives, NGOs running rural-development
+          projects, and government departments handling irrigation and reconstruction at
+          scale.
+        </p>
+        <a class="button button-secondary" href="{% url 'core:page' slug='clients' %}">See our clients</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

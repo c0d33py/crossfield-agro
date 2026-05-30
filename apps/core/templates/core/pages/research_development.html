@@ -1,0 +1,51 @@
+{% extends "core/_page.html" %}
+
+{% block page_body %}
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">What we work on</p>
+    <h2>Formulation, agronomy, and analytics.</h2>
+    <div class="grid grid--3" style="margin-top: 32px;">
+      <article class="card card--accent">
+        <h3>Formulation chemistry</h3>
+        <p>Improving stability, bioavailability, and handling characteristics across our fertilizer and agrochemical portfolio.</p>
+      </article>
+      <article class="card card--accent">
+        <h3>Agronomy field trials</h3>
+        <p>Multi-site trial network across Pakistan's major cropping zones. Independent agronomists co-design and review protocols.</p>
+      </article>
+      <article class="card card--accent">
+        <h3>Analytical method development</h3>
+        <p>Faster, more sensitive QA methods so we can run tighter release specifications without slowing the plant.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--surface">
+  <div class="container">
+    <p class="eyebrow">How we work</p>
+    <h2>From lab to field to shelf.</h2>
+    <ol style="max-width: 70ch; padding-left: 1.25em;">
+      <li><strong>Hypothesis</strong> — formulation or agronomy idea, framed against a specific customer or crop problem.</li>
+      <li><strong>Lab development</strong> — formulation and stability work; small-scale efficacy screens.</li>
+      <li><strong>Pilot manufacture</strong> — produce a representative batch on pilot equipment; check scale-up risks.</li>
+      <li><strong>Field trial</strong> — multi-site, multi-season, blinded against current standard product.</li>
+      <li><strong>Commercial release</strong> — only after the trial data clears an internal review with operations and QA.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Partnerships</p>
+    <h2>External collaborators.</h2>
+    <p class="lead" style="max-width: 70ch;">
+      We collaborate with Pakistani agricultural universities, research institutes, and
+      independent agronomists on field trials and method validation. We're open to
+      contract-research relationships for industrial customers needing custom formulations.
+    </p>
+    <a class="button button-secondary" href="{% url 'contact:form' %}">Discuss a project</a>
+  </div>
+</section>
+{% endblock %}

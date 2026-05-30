@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+<!-- Standard corporate page shell: SEO meta -> breadcrumb -> hero -> content -> CTA -->
+
+{% block title %}{{ page.title }} | Crosfield Agro{% endblock %}
+{% block meta_description %}{{ page.description }}{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">{% endblock %}
+
+{% block og_title %}{{ page.title }}{% endblock %}
+{% block og_description %}{{ page.description }}{% endblock %}
+
+{% block extra_head %}
+<!-- WebPage + BreadcrumbList — applies to every corporate page that extends this shell. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "{{ page.title|escapejs }}",
+  "description": "{{ page.description|escapejs }}",
+  "url": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Crosfield Agro",
+    "url": "{{ request.scheme }}://{{ request.get_host }}/"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ request.scheme }}://{{ request.get_host }}/"},
+      {"@type": "ListItem", "position": 2, "name": "{{ page.title|escapejs }}", "item": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}"}
+    ]
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+  {% block breadcrumb %}
+    <nav class="breadcrumb container" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="{% url 'core:home' %}">Home</a></li>
+        <li aria-current="page">{{ page.title }}</li>
+      </ol>
+    </nav>
+  {% endblock %}
+
+  {% block hero %}
+    <section class="hero hero--compact">
+      <div class="container">
+        <p class="eyebrow">{{ page.section|capfirst }}</p>
+        <h1>{{ page.title }}</h1>
+        <p>{{ page.description }}</p>
+      </div>
+    </section>
+  {% endblock %}
+
+  {% block page_body %}{% endblock %}
+
+  {% block page_cta %}
+    <section class="section section--surface">
+      <div class="container" style="display: grid; gap: 16px; justify-items: start;">
+        <p class="eyebrow">Next step</p>
+        <h2>Talk to our team</h2>
+        <p class="lead" style="max-width: 60ch;">
+          Whether you're sourcing a specific input, evaluating us as a supplier, or exploring a partnership —
+          our sales and technical teams respond within one business day.
+        </p>
+        <a class="button button-primary" href="{% url 'contact:form' %}">Contact Sales</a>
+      </div>
+    </section>
+  {% endblock %}
+{% endblock %}

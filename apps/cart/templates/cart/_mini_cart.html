@@ -1,0 +1,37 @@
+<!--
+Mini-cart drawer contents — rendered inside the drawer container in base.html
+AND returned standalone by cart:fragment for JS refresh after add-to-cart.
+-->
+
+{% if summary and summary.lines %}
+  <p class="eyebrow">Your cart</p>
+  <h3 style="margin-bottom: 16px;">{{ summary.item_count }} item{{ summary.item_count|pluralize }}</h3>
+
+  <ul class="mini-cart__lines" role="list">
+    {% for line in summary.lines %}
+      <li class="mini-cart__line">
+        <div class="mini-cart__product">
+          <a href="{{ line.item.product.get_absolute_url }}">{{ line.item.product.name }}</a>
+          {% if line.item.variant %}<p class="help">{{ line.item.variant.name }}</p>{% endif %}
+          <p class="help">{{ line.item.quantity }} × {{ summary.currency }} {{ line.unit_price }}</p>
+        </div>
+        <div class="mini-cart__total">{{ summary.currency }} {{ line.line_total }}</div>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <div class="mini-cart__subtotal">
+    <span>Subtotal</span>
+    <strong>{{ summary.currency }} {{ summary.subtotal }}</strong>
+  </div>
+
+  <div class="mini-cart__actions">
+    <a class="button button-secondary" href="{% url 'cart:detail' %}">View Cart</a>
+    <a class="button button-primary" href="{% url 'checkout:start' %}">Checkout</a>
+  </div>
+{% else %}
+  <p class="eyebrow">Your cart</p>
+  <h3>Empty.</h3>
+  <p class="help">Browse the catalogue to add products.</p>
+  <a class="button button-primary" href="{% url 'products:product-list' %}">Browse Products</a>
+{% endif %}

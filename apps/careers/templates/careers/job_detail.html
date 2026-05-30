@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}{{ posting.seo_title|default:posting.title }} | Careers | Crosfield Agro Pakistan{% endblock %}
+{% block meta_description %}{{ posting.seo_description|default:posting.summary|truncatechars:160 }}{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ posting.get_absolute_url }}">{% endblock %}
+
+{% block og %}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ posting.title }}">
+  <meta property="og:description" content="{{ posting.summary }}">
+  <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ posting.get_absolute_url }}">
+  <meta name="twitter:card" content="summary">
+{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "JobPosting",
+  "title": "{{ posting.title|escapejs }}",
+  "description": "{{ posting.summary|truncatechars:300|escapejs }}",
+  "datePosted": "{{ posting.published_at|date:'c' }}",
+  {% if posting.closes_at %}"validThrough": "{{ posting.closes_at|date:'c' }}",{% endif %}
+  "employmentType": "{{ posting.employment_type|upper }}",
+  "hiringOrganization": {
+    "@type": "Organization",
+    "name": "Crosfield Agro Pakistan",
+    "sameAs": "{{ request.scheme }}://{{ request.get_host }}/"
+  },
+  "jobLocation": {
+    "@type": "Place",
+    "address": {"@type": "PostalAddress", "addressLocality": "{{ posting.location|escapejs }}", "addressCountry": "PK"}
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li><a href="{% url 'careers:list' %}">Careers</a></li>
+    <li aria-current="page">{{ posting.title }}</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">{{ posting.department.name }}</p>
+    <h1>{{ posting.title }}</h1>
+    <p>
+      {{ posting.location }} · {{ posting.get_employment_type_display }} ·
+      {{ posting.get_experience_level_display }}
+      {% if posting.closes_at %}
+        · <span style="color: var(--color-gold-500);">Closes {{ posting.closes_at|date:"j M Y" }}</span>
+      {% endif %}
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid grid--2" style="align-items: start;">
+      <div>
+        <p class="eyebrow">About the role</p>
+        <div style="font-size: 1.0625rem; line-height: 1.7;">
+          {{ posting.description|linebreaks }}
+        </div>
+
+        {% if posting.responsibilities %}
+          <p class="eyebrow" style="margin-top: 32px;">What you'll do</p>
+          <ul>{% for r in posting.responsibilities %}<li>{{ r }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        {% if posting.requirements %}
+          <p class="eyebrow" style="margin-top: 32px;">What we're looking for</p>
+          <ul>{% for r in posting.requirements %}<li>{{ r }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        {% if posting.benefits %}
+          <p class="eyebrow" style="margin-top: 32px;">What we offer</p>
+          <ul>{% for b in posting.benefits %}<li>{{ b }}</li>{% endfor %}</ul>
+        {% endif %}
+      </div>
+
+      <aside>
+        <div class="card card--accent">
+          <p class="eyebrow">Apply for this role</p>
+
+          {% if messages %}
+            <div role="status" aria-live="polite">
+              {% for message in messages %}
+                <div class="card" style="margin: 16px 0; border-color: var(--color-gold-600);">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {% if form %}
+            <form class="form" method="post" enctype="multipart/form-data" novalidate>
+              {% csrf_token %}
+
+              {% if form.non_field_errors %}
+                <div role="alert">{% for e in form.non_field_errors %}<p class="error">{{ e }}</p>{% endfor %}</div>
+              {% endif %}
+
+              <div style="position:absolute; left:-9999px;" aria-hidden="true">{{ form.website }}</div>
+
+              <div>
+                <label for="id_full_name">Full name <span class="required" aria-hidden="true">*</span></label>
+                {{ form.full_name }}
+                {% for e in form.full_name.errors %}<p class="error">{{ e }}</p>{% endfor %}
+              </div>
+              <div>
+                <label for="id_email">Email <span class="required" aria-hidden="true">*</span></label>
+                {{ form.email }}
+                {% for e in form.email.errors %}<p class="error">{{ e }}</p>{% endfor %}
+              </div>
+              <div>
+                <label for="id_phone">Phone <span class="help">(optional)</span></label>
+                {{ form.phone }}
+                {% for e in form.phone.errors %}<p class="error">{{ e }}</p>{% endfor %}
+              </div>
+              <div>
+                <label for="id_location">Where you're based</label>
+                {{ form.location }}
+                {% for e in form.location.errors %}<p class="error">{{ e }}</p>{% endfor %}
+              </div>
+              <div>
+                <label for="id_cv">CV / Résumé <span class="required" aria-hidden="true">*</span></label>
+                {{ form.cv }}
+                <p class="help">PDF, DOC, or DOCX up to 5 MB.</p>
+                {% for e in form.cv.errors %}<p class="error">{{ e }}</p>{% endfor %}
+              </div>
+              <div>
+                <label for="id_cover_letter">Cover letter</label>
+                {{ form.cover_letter }}
+                <p class="help">Optional — why this role, why Crosfield.</p>
+              </div>
+              <div>
+                <label for="id_linkedin_url">LinkedIn URL</label>
+                {{ form.linkedin_url }}
+              </div>
+
+              <button class="button button-primary" type="submit" data-prevent-double-submit>
+                Submit Application
+              </button>
+            </form>
+          {% else %}
+            <p>This posting is no longer accepting applications. View <a href="{% url 'careers:list' %}">other open roles</a>.</p>
+          {% endif %}
+        </div>
+
+        <div class="card" style="margin-top: 16px;">
+          <p class="eyebrow">Hiring timeline</p>
+          <ol style="padding-left: 1.25em; margin: 8px 0 0;">
+            <li>Application review: 5–10 business days</li>
+            <li>Initial conversation: 30–45 min by phone</li>
+            <li>Technical / functional interview: 60–90 min</li>
+            <li>Final round: on-site, half day</li>
+            <li>Offer + reference checks</li>
+          </ol>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_body %}
+<script>
+  document.querySelectorAll('form [data-prevent-double-submit]').forEach(function (btn) {
+    btn.form.addEventListener('submit', function () {
+      btn.disabled = true;
+      btn.textContent = 'Submitting…';
+    });
+  });
+</script>
+{% endblock %}

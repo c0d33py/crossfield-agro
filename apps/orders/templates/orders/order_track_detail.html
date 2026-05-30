@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Order {{ order.number }} — Tracking | Crosfield Agro Pakistan{% endblock %}
+{% block meta_description %}Tracking status for order {{ order.number }}.{% endblock %}
+{% block canonical %}<meta name="robots" content="noindex,follow">{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li><a href="{% url 'orders:track' %}">Track order</a></li>
+    <li aria-current="page">{{ order.number }}</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">Order tracking</p>
+    <h1>{{ order.number }}</h1>
+    <p>
+      Placed {{ order.created_at|date:"j F Y" }} ·
+      <span class="status-pill status-pill--{{ order.current_status }}" style="vertical-align: middle;">
+        {{ order.get_cached_status_display }}
+      </span>
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width: 760px;">
+    <div class="card card--accent">
+      <p class="eyebrow">Current status</p>
+      <h2 style="margin: 8px 0 12px;">{{ order.get_cached_status_display }}</h2>
+      <p>
+        {% if order.current_status == "pending" %}
+          We've received your order. Our team will contact you shortly to confirm details before processing.
+        {% elif order.current_status == "confirmed" %}
+          Your order is confirmed and is being prepared for fulfillment.
+        {% elif order.current_status == "paid" %}
+          Payment received. Your order will move to processing within one business day.
+        {% elif order.current_status == "processing" %}
+          Our warehouse is picking and packing your order.
+        {% elif order.current_status == "shipped" %}
+          Your order has left our facility and is en route.
+          {% if tracking_number %}
+            Tracking <code>{{ tracking_number }}</code>{% if carrier %} via {{ carrier }}{% endif %}.
+          {% endif %}
+        {% elif order.current_status == "delivered" %}
+          Your order has been delivered. Thank you for your business.
+        {% elif order.current_status == "completed" %}
+          Order complete. We hope everything met expectations.
+        {% elif order.current_status == "cancelled" %}
+          This order has been cancelled. <a href="{% url 'contact:form' %}">Contact us</a> if you have any questions.
+        {% elif order.current_status == "payment_failed" %}
+          Payment could not be confirmed. <a href="{% url 'contact:form' %}">Contact us</a> to retry or use a different method.
+        {% elif order.current_status == "refunded" %}
+          This order has been refunded.
+        {% else %}
+          Status: {{ order.get_cached_status_display }}.
+        {% endif %}
+      </p>
+    </div>
+
+    {% if tracking_number %}
+      <div class="card" style="margin-top: 24px;">
+        <p class="eyebrow">Shipment tracking</p>
+        <dl class="facts" style="grid-template-columns: 1fr;">
+          <dt>Tracking number</dt><dd><code>{{ tracking_number }}</code></dd>
+          {% if carrier %}<dt>Carrier</dt><dd>{{ carrier }}</dd>{% endif %}
+        </dl>
+      </div>
+    {% endif %}
+
+    <div class="card" style="margin-top: 24px;">
+      <p class="eyebrow">Order history</p>
+      <ol class="timeline" style="margin-top: 16px;">
+        {% for ev in events %}
+          <li>
+            <time datetime="{{ ev.created_at|date:'c' }}">
+              {{ ev.created_at|date:"j M Y, H:i" }}
+            </time>
+            <strong>{{ ev.get_event_type_display }}</strong>
+            {% if ev.metadata.tracking_number %}
+              <p class="help" style="margin: 4px 0 0;">
+                Tracking: <code>{{ ev.metadata.tracking_number }}</code>
+                {% if ev.metadata.carrier %} · {{ ev.metadata.carrier }}{% endif %}
+              </p>
+            {% endif %}
+          </li>
+        {% empty %}
+          <li><span class="help">No events yet.</span></li>
+        {% endfor %}
+      </ol>
+    </div>
+
+    <div class="card" style="margin-top: 24px;">
+      <p class="eyebrow">Need help?</p>
+      <p>Questions about this order? Our account team responds within one business day.</p>
+      <a class="button button-secondary" href="{% url 'contact:form' %}">Contact us</a>
+    </div>
+
+    <p style="margin-top: 32px; text-align: center;">
+      <a href="{% url 'orders:track' %}">← Track another order</a>
+    </p>
+  </div>
+</section>
+{% endblock %}

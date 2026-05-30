@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Blog | Crosfield Agro Pakistan{% endblock %}
+{% block meta_description %}Field notes, agronomy guidance, and industry analysis from the Crosfield Agro Pakistan team.{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "Crosfield Agro Pakistan Blog",
+  "url": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}",
+  "publisher": {"@type": "Organization", "name": "Crosfield Agro Pakistan"}
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li aria-current="page">Blog</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">Editorial</p>
+    <h1>Field notes, analysis, and how-to.</h1>
+    <p>Agronomy guidance, product technical notes, and industry analysis from the Crosfield Agro Pakistan team.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    {% if tags %}
+      <p class="eyebrow">Browse by topic</p>
+      <p style="display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 32px;">
+        {% for tag in tags %}
+          <a href="{{ tag.get_absolute_url }}"
+             style="display: inline-block; padding: 6px 12px; background: var(--color-green-100); color: var(--color-green-900); border-radius: 999px; text-decoration: none; font-size: 0.875rem;">
+            {{ tag.name }}
+          </a>
+        {% endfor %}
+      </p>
+    {% endif %}
+
+    {% if posts %}
+      <div class="grid grid--3">
+        {% for post in posts %}
+          {% include "blog/_card.html" with post=post %}
+        {% endfor %}
+      </div>
+
+      {% if page_obj.has_other_pages %}
+        <nav class="pagination" aria-label="Pagination"
+             style="margin-top: 32px; display: flex; gap: 16px; align-items: center;">
+          {% if page_obj.has_previous %}<a rel="prev" href="?page={{ page_obj.previous_page_number }}">← Previous</a>{% endif %}
+          <span class="help">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+          {% if page_obj.has_next %}<a rel="next" href="?page={{ page_obj.next_page_number }}">Next →</a>{% endif %}
+        </nav>
+      {% endif %}
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-state__icon" aria-hidden="true">✍️</div>
+        <h2>No posts yet.</h2>
+        <p>The editorial team is preparing the first articles. Check back soon, or contact us with topic suggestions.</p>
+        <a class="button button-primary" href="{% url 'contact:form' %}">Suggest a topic</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

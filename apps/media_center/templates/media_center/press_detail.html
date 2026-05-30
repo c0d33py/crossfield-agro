@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}{{ release.seo_title|default:release.title }} | Crosfield Agro Pakistan{% endblock %}
+{% block meta_description %}{{ release.seo_description|default:release.summary|truncatechars:160 }}{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ release.get_absolute_url }}">{% endblock %}
+
+{% block og %}
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="{{ release.title }}">
+  <meta property="og:description" content="{{ release.summary }}">
+  <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ release.get_absolute_url }}">
+  {% if release.hero_image %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ release.hero_image.url }}">{% endif %}
+  <meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  "headline": "{{ release.title|escapejs }}",
+  "description": "{{ release.summary|truncatechars:300|escapejs }}",
+  "datePublished": "{{ release.issued_on|date:'c' }}",
+  "publisher": {"@type": "Organization", "name": "Crosfield Agro Pakistan"}{% if release.hero_image %},
+  "image": "{{ request.scheme }}://{{ request.get_host }}{{ release.hero_image.url }}"{% endif %}
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li><a href="{% url 'media_center:index' %}">Media Center</a></li>
+    <li><a href="{% url 'media_center:press-list' %}">Press Releases</a></li>
+    <li aria-current="page">{{ release.title|truncatechars:50 }}</li>
+  </ol>
+</nav>
+
+<article>
+  <header class="hero hero--compact">
+    <div class="container" style="max-width: 820px;">
+      <p class="eyebrow">Press Release · {{ release.issued_on|date:"j F Y" }}</p>
+      <h1>{{ release.title }}</h1>
+      <p class="lead">{{ release.summary }}</p>
+    </div>
+  </header>
+
+  {% if release.hero_image %}
+    <div class="container" style="max-width: 980px; margin-top: -32px;">
+      <img src="{{ release.hero_image.url }}" alt="{{ release.title }}"
+           loading="eager" fetchpriority="high"
+           width="980" height="552"
+           style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px;">
+    </div>
+  {% endif %}
+
+  <section class="section">
+    <div class="container" style="max-width: 720px;">
+      <div style="font-size: 1.0625rem; line-height: 1.75;">
+        {{ release.body|linebreaks }}
+      </div>
+
+      {% if release.pdf %}
+        <p style="margin-top: 32px;">
+          <a class="button button-secondary" href="{{ release.pdf.url }}" download>
+            Download PDF version
+          </a>
+        </p>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="container" style="max-width: 720px;">
+      <div class="card">
+        <p class="eyebrow">About Crosfield Agro Pakistan</p>
+        <p>
+          Crosfield Agro Pakistan manufactures fertilizers, agrochemicals, and specialty inputs
+          under ISO-certified processes for growers, processors, and industrial buyers across South Asia.
+          <a href="{% url 'core:page' slug='about-us' %}">Learn more →</a>
+        </p>
+      </div>
+
+      <div class="card" style="margin-top: 16px;">
+        <p class="eyebrow">Media contact</p>
+        <p>media@crosfieldagro.com.pk · <a href="{% url 'contact:form' %}">Contact form</a></p>
+      </div>
+    </div>
+  </section>
+</article>
+{% endblock %}

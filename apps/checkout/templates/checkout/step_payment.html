@@ -1,0 +1,80 @@
+{% extends "checkout/_shell.html" %}
+
+{% block step_title %}Payment — Step 3 of 3{% endblock %}
+{% block step_heading %}Choose how to pay.{% endblock %}
+{% block step_intro %}Payment is confirmed asynchronously. You'll see a processing screen while we wait for your bank or wallet to confirm.{% endblock %}
+
+{% block step_body %}
+<form class="form" method="post" novalidate style="max-width: none;">
+  {% csrf_token %}
+
+  {% if form.non_field_errors %}
+    <div role="alert">{% for e in form.non_field_errors %}<p class="error">{{ e }}</p>{% endfor %}</div>
+  {% endif %}
+
+  <fieldset style="border: 1px solid var(--color-rule); border-radius: 8px; padding: 24px;">
+    <legend style="padding: 0 8px; font-weight: 600; color: var(--color-green-900);">Payment method</legend>
+
+    <div role="radiogroup" aria-labelledby="payment-methods-label">
+      <p id="payment-methods-label" class="visually-hidden">Payment method options</p>
+      {% for choice in form.gateway %}
+        <label style="display: flex; gap: 12px; align-items: flex-start; padding: 16px;
+                      border: 1px solid var(--color-rule); border-radius: 6px; margin-bottom: 12px;
+                      cursor: pointer; transition: border-color 80ms ease;">
+          {{ choice.tag }}
+          <span>
+            <strong>{{ choice.choice_label }}</strong>
+            <p class="help" style="margin: 4px 0 0;">
+              {% if choice.data.value == "cod" %}
+                Pay cash to the courier when your order is delivered. No prepayment required — keep the order total ready on delivery day.
+              {% elif choice.data.value == "bank_transfer" %}
+                Wire the order total to our bank account. Sales will email the account details and confirm receipt before dispatch.
+              {% else %}
+                Redirected to {{ choice.choice_label }} to complete payment securely.
+              {% endif %}
+            </p>
+          </span>
+        </label>
+      {% endfor %}
+      {% if form.gateway.errors %}
+        {% for e in form.gateway.errors %}<p class="error">{{ e }}</p>{% endfor %}
+      {% endif %}
+    </div>
+  </fieldset>
+
+  <label style="display: flex; gap: 8px; align-items: flex-start;">
+    {{ form.accept_terms }}
+    <span>
+      I agree to the
+      <a href="{% url 'core:page' slug='terms-conditions' %}" target="_blank" rel="noopener">Terms &amp; Conditions</a>
+      and authorise Crosfield Agro Pakistan to process this order.
+    </span>
+  </label>
+  {% for e in form.accept_terms.errors %}<p class="error">{{ e }}</p>{% endfor %}
+
+  <div style="display: flex; gap: 12px; justify-content: space-between; flex-wrap: wrap;">
+    <a class="button button-secondary" href="{% url 'checkout:review' %}">← Back to review</a>
+    <button class="button button-primary" type="submit" data-prevent-double-submit>
+      Place order — {{ summary.currency }} {{ summary.subtotal }}
+    </button>
+  </div>
+</form>
+{% endblock %}
+
+{% block extra_body %}
+<style>
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+</style>
+<script>
+  document.querySelectorAll('form [data-prevent-double-submit]').forEach(function (btn) {
+    btn.form.addEventListener('submit', function () {
+      btn.disabled = true;
+      btn.textContent = 'Placing order…';
+    });
+  });
+</script>
+{% endblock %}

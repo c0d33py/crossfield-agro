@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Solutions by Farm Type | Crosfield Agro{% endblock %}
+{% block meta_description %}Field, orchard, greenhouse or commercial — see the equipment, irrigation and seed packages Crosfield Agro builds for each kind of operation.{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Solutions by Farm Type",
+  "url": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}",
+  "description": "Equipment, irrigation and seed packages built for each kind of farm operation."
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li aria-current="page">Solutions</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">Solutions by farm type</p>
+    <h1>What kind of farm are you running?</h1>
+    <p>
+      Pick your operation — open-field cereals, cotton or sugarcane, orchards and
+      vineyards, greenhouse vegetables, commercial dairy, or a leveling-and-pivot
+      project. We'll show you the equipment, irrigation kit and seed lines we build
+      for that work, with the engineers who back them up.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid grid--3">
+      {% for industry in industries %}
+        <article class="card card--accent">
+          <h3><a href="{{ industry.get_absolute_url }}">{{ industry.name }}</a></h3>
+          <p>{{ industry.summary }}</p>
+          <p style="margin-top: 12px;"><a href="{{ industry.get_absolute_url }}">Products for {{ industry.name|lower }} →</a></p>
+        </article>
+      {% empty %}
+        <p>No solutions published yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section--surface">
+  <div class="container" style="display: grid; gap: 16px; justify-items: start;">
+    <p class="eyebrow">Operation not listed?</p>
+    <h2>Tell us what you're farming.</h2>
+    <p class="lead" style="max-width: 60ch;">
+      Many of our customers run mixed operations that don't fit neatly into one bucket.
+      Describe the work — crops, acreage, water source, power — and we'll suggest the
+      right combination of leveling, irrigation, machinery and seeds.
+    </p>
+    <a class="button button-primary" href="{% url 'contact:form' %}">Talk to a field engineer</a>
+  </div>
+</section>
+{% endblock %}

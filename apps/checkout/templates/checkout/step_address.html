@@ -1,0 +1,120 @@
+{% extends "checkout/_shell.html" %}
+
+{% block step_title %}Address — Step 1 of 3{% endblock %}
+{% block step_heading %}Shipping &amp; billing address.{% endblock %}
+{% block step_intro %}We'll deliver to the shipping address and invoice the billing address.{% endblock %}
+
+{% block step_body %}
+<form class="form" method="post" novalidate style="max-width: none;">
+  {% csrf_token %}
+
+  {% if form.non_field_errors %}
+    <div role="alert">{% for e in form.non_field_errors %}<p class="error">{{ e }}</p>{% endfor %}</div>
+  {% endif %}
+
+  <fieldset style="border: 1px solid var(--color-rule); border-radius: 8px; padding: 24px;">
+    <legend style="padding: 0 8px; font-weight: 600; color: var(--color-green-900);">Contact</legend>
+    <div>
+      <label for="id_email">Email <span class="required" aria-hidden="true">*</span></label>
+      {{ form.email }}
+      {% for e in form.email.errors %}<p class="error">{{ e }}</p>{% endfor %}
+      <p class="help">Order confirmation, invoice, and shipping updates go here.</p>
+    </div>
+  </fieldset>
+
+  <fieldset style="border: 1px solid var(--color-rule); border-radius: 8px; padding: 24px;">
+    <legend style="padding: 0 8px; font-weight: 600; color: var(--color-green-900);">Shipping address</legend>
+
+    <div>
+      <label for="id_shipping_name">Full name <span class="required" aria-hidden="true">*</span></label>
+      {{ form.shipping_name }}
+      {% for e in form.shipping_name.errors %}<p class="error">{{ e }}</p>{% endfor %}
+    </div>
+    <div>
+      <label for="id_shipping_line1">Address line 1 <span class="required" aria-hidden="true">*</span></label>
+      {{ form.shipping_line1 }}
+      {% for e in form.shipping_line1.errors %}<p class="error">{{ e }}</p>{% endfor %}
+    </div>
+    <div>
+      <label for="id_shipping_line2">Address line 2</label>
+      {{ form.shipping_line2 }}
+    </div>
+    <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 16px;">
+      <div>
+        <label for="id_shipping_city">City <span class="required" aria-hidden="true">*</span></label>
+        {{ form.shipping_city }}
+        {% for e in form.shipping_city.errors %}<p class="error">{{ e }}</p>{% endfor %}
+      </div>
+      <div>
+        <label for="id_shipping_postal_code">Postal code <span class="required" aria-hidden="true">*</span></label>
+        {{ form.shipping_postal_code }}
+        {% for e in form.shipping_postal_code.errors %}<p class="error">{{ e }}</p>{% endfor %}
+      </div>
+    </div>
+    <div class="grid" style="grid-template-columns: 1fr 2fr; gap: 16px;">
+      <div>
+        <label for="id_shipping_country">Country <span class="required" aria-hidden="true">*</span></label>
+        {{ form.shipping_country }}
+        {% for e in form.shipping_country.errors %}<p class="error">{{ e }}</p>{% endfor %}
+      </div>
+      <div>
+        <label for="id_shipping_phone">Phone <span class="required" aria-hidden="true">*</span></label>
+        {{ form.shipping_phone }}
+        {% for e in form.shipping_phone.errors %}<p class="error">{{ e }}</p>{% endfor %}
+        <p class="help">Pakistani mobile (+92 3xx xxxxxxx) — carrier uses this for delivery coordination.</p>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset style="border: 1px solid var(--color-rule); border-radius: 8px; padding: 24px;">
+    <legend style="padding: 0 8px; font-weight: 600; color: var(--color-green-900);">Billing address</legend>
+    <label style="display: flex; gap: 8px; align-items: center; cursor: pointer; font-weight: 500;">
+      {{ form.billing_same_as_shipping }}
+      Billing address same as shipping
+    </label>
+
+    <details {% if not form.billing_same_as_shipping.value %}open{% endif %}
+             style="margin-top: 12px;">
+      <summary class="help" style="cursor: pointer;">Enter a different billing address</summary>
+      <div style="margin-top: 16px; display: grid; gap: 18px;">
+        <div>
+          <label for="id_billing_name">Full name</label>
+          {{ form.billing_name }}
+          {% for e in form.billing_name.errors %}<p class="error">{{ e }}</p>{% endfor %}
+        </div>
+        <div>
+          <label for="id_billing_line1">Address line 1</label>
+          {{ form.billing_line1 }}
+          {% for e in form.billing_line1.errors %}<p class="error">{{ e }}</p>{% endfor %}
+        </div>
+        <div>
+          <label for="id_billing_line2">Address line 2</label>
+          {{ form.billing_line2 }}
+        </div>
+        <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 16px;">
+          <div>
+            <label for="id_billing_city">City</label>
+            {{ form.billing_city }}
+            {% for e in form.billing_city.errors %}<p class="error">{{ e }}</p>{% endfor %}
+          </div>
+          <div>
+            <label for="id_billing_postal_code">Postal code</label>
+            {{ form.billing_postal_code }}
+            {% for e in form.billing_postal_code.errors %}<p class="error">{{ e }}</p>{% endfor %}
+          </div>
+        </div>
+        <div>
+          <label for="id_billing_country">Country</label>
+          {{ form.billing_country }}
+          {% for e in form.billing_country.errors %}<p class="error">{{ e }}</p>{% endfor %}
+        </div>
+      </div>
+    </details>
+  </fieldset>
+
+  <div style="display: flex; gap: 12px; justify-content: space-between; flex-wrap: wrap;">
+    <a class="button button-secondary" href="{% url 'cart:detail' %}">← Back to cart</a>
+    <button class="button button-primary" type="submit">Continue to review →</button>
+  </div>
+</form>
+{% endblock %}

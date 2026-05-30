@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}{{ industry.seo_title|default:industry.name }} | Crosfield Agro Pakistan{% endblock %}
+{% block meta_description %}{{ industry.seo_description|default:industry.summary|truncatechars:160 }}{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ industry.get_absolute_url }}">{% endblock %}
+
+{% block og %}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ industry.seo_title|default:industry.name }}">
+  <meta property="og:description" content="{{ industry.seo_description|default:industry.summary|truncatechars:160 }}">
+  <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ industry.get_absolute_url }}">
+  {% if industry.hero_image %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ industry.hero_image.url }}">{% endif %}
+  <meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "{{ industry.name|escapejs }}",
+  "url": "{{ request.scheme }}://{{ request.get_host }}{{ industry.get_absolute_url }}",
+  "description": "{{ industry.summary|truncatechars:300|escapejs }}",
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type":"ListItem","position":1,"name":"Industries","item":"{{ request.scheme }}://{{ request.get_host }}{% url 'industries:list' %}"},
+      {"@type":"ListItem","position":2,"name":"{{ industry.name|escapejs }}","item":"{{ request.scheme }}://{{ request.get_host }}{{ industry.get_absolute_url }}"}
+    ]
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li><a href="{% url 'industries:list' %}">Industries</a></li>
+    <li aria-current="page">{{ industry.name }}</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">Industry</p>
+    <h1>{{ industry.name }}</h1>
+    <p>{{ industry.summary }}</p>
+  </div>
+</section>
+
+{% if industry.body %}
+<section class="section">
+  <div class="container" style="max-width: 820px;">
+    <p class="eyebrow">About this segment</p>
+    {{ industry.body|linebreaks }}
+  </div>
+</section>
+{% endif %}
+
+<section class="section section--surface">
+  <div class="container">
+    <p class="eyebrow">Products for this industry</p>
+    <h2>What we supply to {{ industry.name|lower }} customers.</h2>
+
+    {% if products %}
+      <div class="grid grid--3" style="margin-top: 32px;">
+        {% for product in products %}
+          <article class="card">
+            <a href="{{ product.get_absolute_url }}" style="text-decoration: none; color: inherit;">
+              {% with primary=product.images.all|first %}
+                {% if primary and primary.image %}
+                  <img src="{{ primary.image.url }}" alt="{{ primary.alt_text|default:product.name }}"
+                       loading="lazy" width="400" height="300"
+                       style="border-radius: 4px; aspect-ratio: 4/3; object-fit: cover; margin-bottom: 12px;">
+                {% endif %}
+              {% endwith %}
+              <h3 style="margin-bottom: 4px;">{{ product.name }}</h3>
+              <p class="help" style="margin: 0 0 8px;">SKU: {{ product.sku }}</p>
+              <p style="font-weight: 600; color: var(--color-green-900);">{{ product.currency }} {{ product.unit_price }}</p>
+            </a>
+          </article>
+        {% endfor %}
+      </div>
+
+      {% if page_obj.has_other_pages %}
+        <nav class="pagination" aria-label="Pagination" style="margin-top: 32px; display: flex; gap: 16px; align-items: center;">
+          {% if page_obj.has_previous %}<a rel="prev" href="?page={{ page_obj.previous_page_number }}">← Previous</a>{% endif %}
+          <span class="help">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+          {% if page_obj.has_next %}<a rel="next" href="?page={{ page_obj.next_page_number }}">Next →</a>{% endif %}
+        </nav>
+      {% endif %}
+    {% else %}
+      <p class="lead">Products are being added for this industry. <a href="{% url 'contact:form' %}">Contact our team</a> in the meantime.</p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="display: grid; gap: 16px; justify-items: start;">
+    <p class="eyebrow">Talk to us</p>
+    <h2>Need a product fit for your operation?</h2>
+    <p class="lead">Our agronomy team can recommend the right product and application programme for your crop, soil, and conditions.</p>
+    <a class="button button-primary" href="{% url 'contact:form' %}">Request Technical Support</a>
+  </div>
+</section>
+{% endblock %}

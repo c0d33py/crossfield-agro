@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Crosfield Agro — Laser Levelers, Tractors, Irrigation, Seeds{% endblock %}
+{% block meta_description %}Crosfield Agro builds and supplies durable farm machinery, precision irrigation, hybrid
+seeds, greenhouses and solar systems — used by farms across Pakistan, Central Asia, Africa and the US.{% endblock %}
+{% block canonical %}
+<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}/">{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Crosfield Agro",
+  "url": "{{ request.scheme }}://{{ request.get_host }}/",
+  "logo": "{{ request.scheme }}://{{ request.get_host }}{% static 'core/img/logo/light_logo.png' %}",
+  "description": "Farm machinery, laser land leveling, drip and pivot irrigation, hybrid seeds, greenhouses and solar solutions for growers in Pakistan and abroad.",
+  "foundingDate": "1990",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Main Multan Road, Thokar Niaz Baig",
+    "addressLocality": "Lahore",
+    "addressCountry": "PK"
+  },
+  "contactPoint": [
+    {"@type": "ContactPoint", "telephone": "+92-300-8403154", "contactType": "sales",
+     "areaServed": ["PK","US","UZ","NG","AF"], "availableLanguage": ["en","ur"]}
+  ],
+  "sameAs": [
+    "https://www.facebook.com/crosfieldagro",
+    "https://twitter.com/CrosfieldC",
+    "https://www.linkedin.com/in/cros-field-531985199/",
+    "https://www.youtube.com/channel/UCAGxNsvOlpzl74-tPDWYscQ"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Crosfield Agro",
+  "url": "{{ request.scheme }}://{{ request.get_host }}/",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "{{ request.scheme }}://{{ request.get_host }}{% url 'products:product-list' %}?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="container">
+    <p class="eyebrow">Field-tested · Built since 1990</p>
+    <h1>Practical machinery for working farms.</h1>
+    <p>
+      Crosfield Agro engineers, assembles and supports the equipment that takes a farm
+      from raw land to harvest — laser land levelers, tractors, drip and pivot irrigation,
+      hybrid seeds, greenhouses and solar power. Built for long days, dust, and the
+      conditions farms actually run in.
+    </p>
+    <div class="hero__actions">
+      <a class="button button-primary" href="{% url 'products:product-list' %}">Browse machinery</a>
+      <a class="button button-secondary" style="color:#fff;border-color:#fff;" href="{% url 'contact:form' %}">Request a
+        quote</a>
+    </div>
+  </div>
+</section>
+
+<section class="partner-strip" aria-label="Partners and distributors">
+  <div class="container">
+    <p class="partner-strip__title">Partners &amp; distributors</p>
+    <div class="partner-strip__track-mask">
+      <ul class="partner-strip__track" role="list">
+        <!-- First copy of the logo set -->
+        <li><img src="{% static 'core/img/partners/kisan-online.png' %}" alt="Kisan Online" loading="lazy" width="262"
+            height="80"></li>
+        <li><img src="{% static 'core/img/partners/moba.jpg' %}" alt="Moba" loading="lazy" width="262" height="80"></li>
+        <li><img src="{% static 'core/img/partners/hilti-moba.jpg' %}" alt="Hilti / Moba" loading="lazy" width="262"
+            height="80"></li>
+        <li><img src="{% static 'core/img/partners/lachin-shipping.png' %}" alt="Lachin Shipping" loading="lazy"
+            width="300" height="96"></li>
+        <li><img src="{% static 'core/img/partners/pioneer-agro.png' %}" alt="Pioneer Agro" loading="lazy" width="262"
+            height="80"></li>
+        <!-- Second copy so the scroll loop has no visual gap. aria-hidden so screen readers don't announce twice. -->
+        <li aria-hidden="true"><img src="{% static 'core/img/partners/kisan-online.png' %}" alt="" loading="lazy"
+            width="262" height="80"></li>
+        <li aria-hidden="true"><img src="{% static 'core/img/partners/moba.jpg' %}" alt="" loading="lazy" width="262"
+            height="80"></li>
+        <li aria-hidden="true"><img src="{% static 'core/img/partners/hilti-moba.jpg' %}" alt="" loading="lazy"
+            width="262" height="80"></li>
+        <li aria-hidden="true"><img src="{% static 'core/img/partners/lachin-shipping.png' %}" alt="" loading="lazy"
+            width="300" height="96"></li>
+        <li aria-hidden="true"><img src="{% static 'core/img/partners/pioneer-agro.png' %}" alt="" loading="lazy"
+            width="262" height="80"></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section section--dark">
+  <div class="container">
+    <div class="stats">
+      <div class="stat">
+        <div class="stat__num">30+</div>
+        <div class="stat__label">Years in the field</div>
+      </div>
+      <div class="stat">
+        <div class="stat__num">5</div>
+        <div class="stat__label">Countries with offices</div>
+      </div>
+      <div class="stat">
+        <div class="stat__num">7</div>
+        <div class="stat__label">Branches across Pakistan</div>
+      </div>
+      <div class="stat">
+        <div class="stat__num">24/7</div>
+        <div class="stat__label">After-sales support</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">What we make and sell</p>
+    <h2>Equipment for every stage of the season.</h2>
+    <div class="grid grid--3" style="margin-top: 32px;">
+      <article class="card card--accent">
+        <h3>Laser land leveling</h3>
+        <p>Complete leveler sets that flatten fields to grade — cut water use, level the seedbed, and lift yields.
+          One-year warranty on full sets.</p>
+        <a href="{% url 'products:product-list' %}">See levelers →</a>
+      </article>
+      <article class="card card--accent">
+        <h3>Tractors &amp; field machinery</h3>
+        <p>Heavy-duty tractors and pre/post-harvest implements priced for owner-operators and contractors.</p>
+        <a href="{% url 'products:product-list' %}">See machinery →</a>
+      </article>
+      <article class="card card--accent">
+        <h3>Irrigation systems</h3>
+        <p>Pivot machines, drip lines, sprinklers, emitters, filters and fittings — designed and installed for your
+          field layout.</p>
+        <a href="{% url 'products:product-list' %}">See irrigation →</a>
+      </article>
+      <article class="card card--accent">
+        <h3>Seeds &amp; fertilizers</h3>
+        <p>Hybrid greenhouse, open-field and major-crop seeds with matched fertilizer programmes.</p>
+        <a href="{% url 'products:product-list' %}">See seeds →</a>
+      </article>
+      <article class="card card--accent">
+        <h3>Greenhouses &amp; tunnels</h3>
+        <p>Structures, covers and climate kit for protected cropping at small-farm and commercial scale.</p>
+        <a href="{% url 'products:product-list' %}">See greenhouses →</a>
+      </article>
+      <article class="card card--accent">
+        <h3>Solar solutions</h3>
+        <p>Solar pumping and on-farm power systems — sized to your daily load and water demand.</p>
+        <a href="{% url 'products:product-list' %}">See solar →</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--surface">
+  <div class="container">
+    <p class="eyebrow">How we work</p>
+    <h2>Designed locally, serviced where you farm.</h2>
+    <div class="grid grid--4" style="margin-top: 32px;">
+      <article class="card">
+        <h3>Local manufacturing</h3>
+        <p>Critical components built in-country, keeping prices honest and lead times short.</p>
+        <a href="{% url 'core:page' slug='manufacturing-process' %}">How we build →</a>
+      </article>
+      <article class="card">
+        <h3>Field R&amp;D</h3>
+        <p>Every machine and seed line is tested on real farms before it hits the catalogue.</p>
+        <a href="{% url 'core:page' slug='research-development' %}">Our R&amp;D →</a>
+      </article>
+      <article class="card">
+        <h3>Durability first</h3>
+        <p>Equipment is over-built for rough handling, dust, water and long duty cycles.</p>
+        <a href="{% url 'core:page' slug='quality-standards' %}">Quality →</a>
+      </article>
+      <article class="card">
+        <h3>On-site service</h3>
+        <p>Branch teams across Pakistan, with training and call-outs included on major purchases.</p>
+        <a href="{% url 'services:list' %}">Services →</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Where we work</p>
+    <h2>From Punjab to four continents.</h2>
+    <p class="lead" style="max-width: 70ch;">
+      Our home base is Lahore, with branches in Multan, Sargodha, Chiniot, Jhang, D.I. Khan,
+      Moro and Shahdadpur. Beyond Pakistan, we run offices in the United States, Uzbekistan,
+      Nigeria and Afghanistan — supplying equipment and irrigation to growers across Central
+      Asia, Africa and the Americas.
+    </p>
+    <div class="hero__actions">
+      <a class="button button-primary" href="{% url 'core:page' slug='global-presence' %}">Our offices</a>
+      <a class="button button-secondary" href="{% url 'contact:form' %}">Find your nearest branch</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Why Crosfield</p>
+    <h2>What our customers get with every order.</h2>
+    <div class="grid grid--4 features" style="margin-top: 32px;">
+      <article class="feature">
+        <img class="feature__icon" src="{% static 'core/img/features/client-satisfaction.png' %}" alt="" loading="lazy"
+          width="80" height="80">
+        <h3>Client Satisfaction</h3>
+        <p>Every product is tested and signed off by our quality assurance team before it ships.</p>
+      </article>
+      <article class="feature">
+        <img class="feature__icon" src="{% static 'core/img/features/support-training.png' %}" alt="" loading="lazy"
+          width="80" height="80">
+        <h3>Support &amp; Training</h3>
+        <p>Full product training on delivery, plus 24/7 support for premium accounts.</p>
+      </article>
+      <article class="feature">
+        <img class="feature__icon" src="{% static 'core/img/features/multi-location.png' %}" alt="" loading="lazy"
+          width="80" height="80">
+        <h3>Multiple Locations</h3>
+        <p>Branches across Pakistan put sales, parts and service near where you operate.</p>
+      </article>
+      <article class="feature">
+        <img class="feature__icon" src="{% static 'core/img/features/onsite-service.png' %}" alt="" loading="lazy"
+          width="80" height="80">
+        <h3>On-site Service</h3>
+        <p>For maximum uptime we send engineers to your field, not the other way around.</p>
+      </article>
+    </div>
+    <p style="margin-top: 32px; text-align: center;">
+      <a class="button button-secondary" href="{% url 'services:list' %}">See more →</a>
+    </p>
+  </div>
+</section>
+
+<section class="section section--surface">
+  <div class="container" style="display: grid; gap: 16px; justify-items: start;">
+    <p class="eyebrow">Talk to us</p>
+    <h2>Get a quote or speak to a field engineer.</h2>
+    <p class="lead">Sales response within one business day. Technical and agronomy questions go to a named specialist
+      who knows your crop and region.</p>
+    <a class="button button-primary" href="{% url 'contact:form' %}">Contact sales</a>
+  </div>
+</section>
+
+{% endblock %}

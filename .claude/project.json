@@ -1,0 +1,55 @@
+{
+	"project_name": "Crosfield Agro Pakistan",
+	"type": "corporate_ecommerce_hybrid",
+	"stack": {
+		"backend": "Django",
+		"database": "PostgreSQL",
+		"cache": "Redis",
+		"async": "Celery",
+		"hosting": "VPS / Cloud"
+	},
+	"architecture": "modular_monolith_with_services_layer",
+	"modules": {
+		"core": [
+			"home",
+			"about_us",
+			"company_overview",
+			"mission_vision",
+			"leadership_team",
+			"message_from_ceo",
+			"our_history",
+			"certifications",
+			"quality_standards",
+			"sustainability",
+			"research_development",
+			"infrastructure",
+			"manufacturing_process",
+			"global_presence",
+			"faq",
+			"testimonials",
+			"partners",
+			"clients",
+			"media_highlights",
+			"awards_recognition",
+			"privacy_policy",
+			"terms_conditions",
+			"cookie_policy",
+			"disclaimer",
+			"site_map",
+			"contact_us"
+		],
+		"catalog": ["products", "industries", "services"],
+		"commerce": ["cart", "checkout", "orders", "payments", "shipping", "invoices"],
+		"engagement": ["blog", "contact", "careers", "media"],
+		"system": ["accounts", "seo", "analytics", "audit"]
+	},
+	"principles": [
+		"SEO-first architecture",
+		"commerce-safe transaction flow",
+		"service-layer business logic",
+		"immutable orders",
+		"async payment verification",
+		"performance optimized queries",
+		"admin-driven content management"
+	]
+}

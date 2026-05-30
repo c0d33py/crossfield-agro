@@ -1,0 +1,30 @@
+{% extends "core/_page.html" %}
+
+{% block page_body %}
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Index of pages</p>
+    <h2>Every public page on this site.</h2>
+
+    {% for section, pages in sections.items %}
+      <div style="margin-top: 32px;">
+        <h3 style="text-transform: capitalize;">{{ section }}</h3>
+        <ul style="columns: 2; column-gap: 40px;">
+          {% for p in pages %}
+            <li><a href="{% url 'core:page' slug=p.slug %}">{{ p.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+
+    <div style="margin-top: 32px;">
+      <h3>Catalogue</h3>
+      <ul>
+        <li><a href="{% url 'products:product-list' %}">All products</a></li>
+        <li><a href="{% url 'products:product-search' %}">Product search</a></li>
+      </ul>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block page_cta %}{% endblock %}

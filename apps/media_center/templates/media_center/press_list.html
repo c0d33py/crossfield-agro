@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Press Releases | Crosfield Agro Pakistan{% endblock %}
+{% block meta_description %}All press releases from Crosfield Agro Pakistan.{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Press Releases",
+  "url": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}",
+  "description": "Statements issued by Crosfield Agro Pakistan."
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li><a href="{% url 'media_center:index' %}">Media Center</a></li>
+    <li aria-current="page">Press Releases</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">Newsroom</p>
+    <h1>Press releases.</h1>
+    <p>Statements issued by Crosfield Agro Pakistan.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    {% if releases %}
+      <ul style="list-style: none; padding: 0; display: grid; gap: 24px;">
+        {% for release in releases %}
+          <li class="card card--accent">
+            <p class="help" style="margin: 0 0 8px;">{{ release.issued_on|date:"j F Y" }}</p>
+            <h2 style="font-size: 1.375rem; margin: 0 0 8px;">
+              <a href="{{ release.get_absolute_url }}" style="color: var(--color-green-900);">
+                {{ release.title }}
+              </a>
+            </h2>
+            <p>{{ release.summary }}</p>
+            <p style="margin-top: 12px;">
+              <a href="{{ release.get_absolute_url }}">Read in full →</a>
+              {% if release.pdf %}
+                · <a href="{{ release.pdf.url }}" download>Download PDF</a>
+              {% endif %}
+            </p>
+          </li>
+        {% endfor %}
+      </ul>
+
+      {% if page_obj.has_other_pages %}
+        <nav class="pagination" aria-label="Pagination"
+             style="margin-top: 32px; display: flex; gap: 16px; align-items: center;">
+          {% if page_obj.has_previous %}<a rel="prev" href="?page={{ page_obj.previous_page_number }}">← Previous</a>{% endif %}
+          <span class="help">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+          {% if page_obj.has_next %}<a rel="next" href="?page={{ page_obj.next_page_number }}">Next →</a>{% endif %}
+        </nav>
+      {% endif %}
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-state__icon" aria-hidden="true">📰</div>
+        <h2>No press releases yet.</h2>
+        <p>Releases will appear here once published.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ product.seo_title|default:product.name }} | Crosfield Agro{% endblock %}
+{% block meta_description %}{{ product.seo_description|default:product.short_description|truncatechars:160 }}{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ product.get_absolute_url }}">{% endblock %}
+
+{% block og %}
+  <meta property="og:type" content="product">
+  <meta property="og:title" content="{{ product.seo_title|default:product.name }}">
+  <meta property="og:description" content="{{ product.seo_description|default:product.short_description|truncatechars:160 }}">
+  <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ product.get_absolute_url }}">
+  {% with primary=product.images.all|first %}
+    {% if primary and primary.image %}
+      <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ primary.image.url }}">
+    {% endif %}
+  {% endwith %}
+  <meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "{{ product.name|escapejs }}",
+  "sku": "{{ product.sku|escapejs }}",
+  "description": "{{ product.short_description|default:product.description|truncatechars:300|escapejs }}",
+  "category": "{{ product.category.name|escapejs }}",
+  {% with primary=product.images.all|first %}
+  {% if primary and primary.image %}
+  "image": "{{ request.scheme }}://{{ request.get_host }}{{ primary.image.url }}",
+  {% endif %}
+  {% endwith %}
+  "brand": {"@type": "Brand", "name": "Crosfield Agro"},
+  "offers": {
+    "@type": "Offer",
+    "url": "{{ request.scheme }}://{{ request.get_host }}{{ product.get_absolute_url }}",
+    "priceCurrency": "{{ product.currency }}",
+    "price": "{{ product.unit_price }}",
+    "availability": "{% if product.is_in_stock %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}"
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li><a href="{% url 'products:product-list' %}">Products</a></li>
+    <li><a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></li>
+    <li aria-current="page">{{ product.name }}</li>
+  </ol>
+</nav>
+
+<section class="section">
+  <div class="container">
+    <article class="pdp" itemscope itemtype="https://schema.org/Product">
+
+      <!-- Gallery -->
+      <section class="pdp__gallery" aria-label="Product gallery">
+        {% with images=product.images.all %}
+        {% if images %}
+          <!-- CSS-only thumbnail switcher: each thumb is a label tied to a hidden radio. -->
+          {% for image in images %}
+            <input type="radio" name="pdp-thumb" id="pdp-thumb-{{ forloop.counter }}"
+                   class="pdp__thumb-input" {% if forloop.first %}checked{% endif %}>
+          {% endfor %}
+
+          <div class="pdp__stage">
+            {% for image in images %}
+              <img class="pdp__stage-img"
+                   src="{{ image.image.url }}"
+                   alt="{{ image.alt_text|default:product.name }}"
+                   {% if forloop.first %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %}
+                   width="900" height="900"
+                   itemprop="image">
+            {% endfor %}
+          </div>
+
+          {% if images|length > 1 %}
+            <div class="pdp__thumbs" role="list">
+              {% for image in images %}
+                <label class="pdp__thumb" for="pdp-thumb-{{ forloop.counter }}"
+                       aria-label="Show image {{ forloop.counter }}">
+                  <img src="{{ image.image.url }}"
+                       alt="" loading="lazy" width="120" height="120">
+                </label>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% else %}
+          <div class="pdp__stage pdp__stage--empty" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.2">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="9" cy="9" r="2"/>
+              <path d="m21 15-5-5L5 21"/>
+            </svg>
+            <p class="help" style="margin-top: 12px;">No product image yet.</p>
+          </div>
+        {% endif %}
+        {% endwith %}
+      </section>
+
+      <!-- Purchase panel -->
+      <section class="pdp__buy">
+        <div class="pdp__buy-inner">
+          <header>
+            <p class="eyebrow"><a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></p>
+            <h1 class="pdp__title" itemprop="name">{{ product.name }}</h1>
+            <p class="pdp__sku">SKU: <span itemprop="sku">{{ product.sku }}</span></p>
+          </header>
+
+          <div class="pdp__price-row"
+               itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+            <p class="pdp__price">
+              <span itemprop="priceCurrency" content="{{ product.currency }}">{{ product.currency }}</span>
+              <span itemprop="price" content="{{ product.unit_price }}">{{ product.unit_price|floatformat:0 }}</span>
+            </p>
+            <link itemprop="availability" href="https://schema.org/{% if product.is_in_stock %}InStock{% else %}OutOfStock{% endif %}">
+            {% if not product.track_inventory %}
+              <span class="pdp__stock pdp__stock--mto">Made to order</span>
+            {% elif product.stock_quantity > 0 %}
+              <span class="pdp__stock pdp__stock--in">In stock</span>
+            {% elif product.allow_backorder %}
+              <span class="pdp__stock pdp__stock--back">Backorder available</span>
+            {% else %}
+              <span class="pdp__stock pdp__stock--out">Out of stock</span>
+            {% endif %}
+          </div>
+
+          {% if product.short_description %}
+            <p class="pdp__lede">{{ product.short_description }}</p>
+          {% endif %}
+
+          {% if product.variants.all %}
+            <fieldset class="pdp__variants">
+              <legend>Available pack sizes</legend>
+              {% for variant in product.variants.all %}
+                <label class="pdp__variant">
+                  <input type="radio" name="variant" value="{{ variant.pk }}" {% if forloop.first %}checked{% endif %}>
+                  <span class="pdp__variant-name">{{ variant.name }}</span>
+                  <span class="pdp__variant-price">{{ product.currency }} {{ variant.unit_price|floatformat:0 }}</span>
+                </label>
+              {% endfor %}
+            </fieldset>
+          {% endif %}
+
+          {% url 'cart:add' as cart_add_url %}
+          {% if cart_add_url %}
+            <form class="pdp__form" method="post" action="{{ cart_add_url }}">
+              {% csrf_token %}
+              <input type="hidden" name="product_id" value="{{ product.pk }}">
+              <div class="pdp__qty-row">
+                <label for="qty" class="pdp__qty-label">Quantity</label>
+                <div class="pdp__qty">
+                  <button class="pdp__qty-btn" type="button" data-qty-step="-1" aria-label="Decrease quantity">−</button>
+                  <input id="qty" type="number" name="quantity"
+                         value="{{ product.min_order_quantity }}"
+                         min="{{ product.min_order_quantity }}"
+                         {% if product.max_order_quantity %}max="{{ product.max_order_quantity }}"{% endif %}
+                         required>
+                  <button class="pdp__qty-btn" type="button" data-qty-step="1" aria-label="Increase quantity">+</button>
+                </div>
+                {% if product.max_order_quantity %}
+                  <span class="pdp__qty-hint">
+                    Min {{ product.min_order_quantity }} · Max {{ product.max_order_quantity }}
+                  </span>
+                {% else %}
+                  <span class="pdp__qty-hint">Min order: {{ product.min_order_quantity }}</span>
+                {% endif %}
+              </div>
+              <button class="button button-primary pdp__cta" type="submit"
+                      {% if not product.is_in_stock %}disabled{% endif %}>
+                {% if product.is_in_stock %}Add to Cart{% else %}Out of Stock{% endif %}
+              </button>
+              <a class="button button-secondary pdp__cta-alt" href="{% url 'contact:form' %}">
+                Request a quote
+              </a>
+            </form>
+          {% else %}
+            <a class="button button-primary pdp__cta" href="{% url 'contact:form' %}">
+              Request a quote
+            </a>
+          {% endif %}
+
+          <!-- Trust strip pulled from the same icons as the home page. -->
+          <ul class="pdp__trust" role="list">
+            <li>
+              <img src="{% static 'core/img/features/onsite-service.png' %}" alt="" width="28" height="28">
+              <span>On-site service across Pakistan</span>
+            </li>
+            <li>
+              <img src="{% static 'core/img/features/support-training.png' %}" alt="" width="28" height="28">
+              <span>Training &amp; 24/7 after-sales support</span>
+            </li>
+            <li>
+              <img src="{% static 'core/img/features/client-satisfaction.png' %}" alt="" width="28" height="28">
+              <span>Quality-tested before shipping</span>
+            </li>
+          </ul>
+
+          {% if product.industries.all %}
+            <div class="pdp__industries">
+              <p class="eyebrow">Built for</p>
+              <ul role="list">
+                {% for ind in product.industries.all %}
+                  <li><a href="{{ ind.get_absolute_url }}" class="pdp__chip">{{ ind.name }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      </section>
+
+      <!-- Details (description / specs / shipping) -->
+      <section class="pdp__details">
+        {% if product.description %}
+          <details class="pdp__panel" open>
+            <summary>Description</summary>
+            <div class="pdp__panel-body" itemprop="description">
+              {{ product.description|linebreaks }}
+            </div>
+          </details>
+        {% endif %}
+
+        {% if product.specifications %}
+          <details class="pdp__panel" {% if not product.description %}open{% endif %}>
+            <summary>Specifications</summary>
+            <div class="pdp__panel-body">
+              <dl class="pdp__specs">
+                {% for key, value in product.specifications.items %}
+                  <dt>{{ key }}</dt><dd>{{ value }}</dd>
+                {% endfor %}
+                {% if product.weight_kg %}
+                  <dt>Weight</dt><dd>{{ product.weight_kg }} kg</dd>
+                {% endif %}
+              </dl>
+            </div>
+          </details>
+        {% endif %}
+
+        <details class="pdp__panel">
+          <summary>Delivery &amp; service</summary>
+          <div class="pdp__panel-body">
+            <p>
+              Shipping is quoted per order based on your address and the equipment's
+              weight class. Lead times depend on stock and service crew availability —
+              your sales contact will confirm both with your quote.
+            </p>
+            <ul>
+              <li>Branches across Punjab, Sindh and KPK keep parts within driving distance.</li>
+              <li>Major-purchase installations include on-site training for your operators.</li>
+              <li>24/7 after-sales line for service emergencies.</li>
+            </ul>
+          </div>
+        </details>
+      </section>
+    </article>
+  </div>
+</section>
+
+{% if related %}
+<section class="section section--surface">
+  <div class="container">
+    <p class="eyebrow">Related products</p>
+    <h2>More in {{ product.category.name }}.</h2>
+    <div class="catalog__grid" style="margin-top: 24px;">
+      {% for r in related %}
+        {% include "products/_product_card.html" with product=r %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block extra_body %}
+<script>
+  // Quantity stepper. Hooks the two buttons next to the qty input.
+  document.querySelectorAll('.pdp__qty').forEach(function (group) {
+    var input = group.querySelector('input[type="number"]');
+    if (!input) return;
+    group.querySelectorAll('[data-qty-step]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var step = parseInt(btn.dataset.qtyStep, 10) || 1;
+        var min = parseInt(input.min, 10);
+        var max = input.max ? parseInt(input.max, 10) : Infinity;
+        var next = (parseInt(input.value, 10) || min) + step;
+        if (next < min) next = min;
+        if (next > max) next = max;
+        input.value = next;
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    });
+  });
+</script>
+{% endblock %}

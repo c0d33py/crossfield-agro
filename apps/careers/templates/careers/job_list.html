@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Careers | Crosfield Agro Pakistan{% endblock %}
+{% block meta_description %}Open roles at Crosfield Agro Pakistan — chemistry, agronomy, operations, commercial, and corporate functions.{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Careers at Crosfield Agro Pakistan",
+  "url": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}",
+  "description": "Open roles at Crosfield Agro Pakistan."
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li aria-current="page">Careers</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">Join us</p>
+    <h1>Technical work, with consequences.</h1>
+    <p>
+      Crosfield is small enough that individual contributions are visible and large enough
+      that decisions matter. If you're a chemist, agronomist, plant engineer, or commercial
+      professional looking for technical depth and operational accountability — apply.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    {% if grouped %}
+      {% for department, postings in grouped.items %}
+        <div style="margin-bottom: 48px;">
+          <p class="eyebrow">{{ department }}</p>
+          <div class="grid grid--2" style="margin-top: 16px;">
+            {% for posting in postings %}
+              <article class="card card--accent">
+                <h3 style="margin-bottom: 4px;">
+                  <a href="{{ posting.get_absolute_url }}"
+                     style="color: var(--color-green-900); text-decoration: none;">
+                    {{ posting.title }}
+                  </a>
+                </h3>
+                <p class="help" style="margin: 0 0 12px;">
+                  {{ posting.location }} · {{ posting.get_employment_type_display }} · {{ posting.get_experience_level_display }}
+                </p>
+                <p>{{ posting.summary }}</p>
+                <p style="margin-top: 12px;">
+                  <a href="{{ posting.get_absolute_url }}">View role &amp; apply →</a>
+                </p>
+              </article>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-state__icon" aria-hidden="true">📋</div>
+        <h2>No open roles right now.</h2>
+        <p>
+          We don't always have an open ticker, but we hire continuously for strong candidates
+          in chemistry, agronomy, operations, and commercial. Send your CV via the contact form
+          and route the enquiry to "Careers."
+        </p>
+        <a class="button button-primary" href="{% url 'contact:form' %}">Send a CV</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section section--surface">
+  <div class="container">
+    <p class="eyebrow">What we hire for</p>
+    <h2>Functions we add people in.</h2>
+    <div class="grid grid--3" style="margin-top: 24px;">
+      <article class="card"><h3>R&amp;D</h3><p>Formulation chemists, analytical chemists, agronomy field-trial leads.</p></article>
+      <article class="card"><h3>Operations</h3><p>Process engineers, plant supervisors, maintenance and reliability engineers.</p></article>
+      <article class="card"><h3>Quality &amp; compliance</h3><p>QA chemists, regulatory affairs, EHS specialists, internal auditors.</p></article>
+      <article class="card"><h3>Commercial</h3><p>Account managers, technical sales, business development.</p></article>
+      <article class="card"><h3>Supply chain</h3><p>Procurement, planning, logistics, warehouse operations.</p></article>
+      <article class="card"><h3>Corporate</h3><p>Finance, HR, IT, legal.</p></article>
+    </div>
+  </div>
+</section>
+{% endblock %}

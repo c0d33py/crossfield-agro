@@ -1,0 +1,292 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0F2E1F">
+
+  <!-- Title/description: per-URL SEO admin override wins; otherwise per-page block. -->
+  <title>{% if seo_meta.title %}{{ seo_meta.title }}{% else %}{% block title %}Crosfield Agro{% endblock %}{% endif %}</title>
+  <meta name="description" content="{% if seo_meta.description %}{{ seo_meta.description }}{% else %}{% block meta_description %}Crosfield Agro — laser land levelers, tractors, irrigation, seeds and greenhouses for modern farms across Pakistan and beyond.{% endblock %}{% endif %}">
+
+  {% if seo_meta.canonical_url %}
+    <link rel="canonical" href="{{ seo_meta.canonical_url }}">
+  {% else %}
+    {% block canonical %}{% endblock %}
+  {% endif %}
+
+  {% if seo_meta.noindex or seo_meta.nofollow %}
+    <meta name="robots" content="{% if seo_meta.noindex %}noindex{% else %}index{% endif %},{% if seo_meta.nofollow %}nofollow{% else %}follow{% endif %}">
+  {% endif %}
+
+  {% block og %}
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Crosfield Agro">
+    <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+    <meta property="og:title" content="{% if seo_meta.og_title %}{{ seo_meta.og_title }}{% elif seo_meta.title %}{{ seo_meta.title }}{% else %}{% block og_title %}Crosfield Agro{% endblock %}{% endif %}">
+    <meta property="og:description" content="{% if seo_meta.og_description %}{{ seo_meta.og_description }}{% elif seo_meta.description %}{{ seo_meta.description }}{% else %}{% block og_description %}Smart, durable farm machinery and irrigation — engineered for working farms.{% endblock %}{% endif %}">
+    <meta property="og:image" content="{% if seo_meta.og_image %}{{ seo_meta.og_image.url }}{% else %}{{ request.scheme }}://{{ request.get_host }}{% static 'core/img/og/og-default.png' %}{% endif %}">
+  {% endblock %}
+
+  <!-- Twitter Card: summary_large_image requires twitter:image. Fall back to OG image — Twitter accepts og:* as fallback, but explicit tags improve click-through reliability. -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% if seo_meta.og_title %}{{ seo_meta.og_title }}{% elif seo_meta.title %}{{ seo_meta.title }}{% else %}Crosfield Agro{% endif %}">
+  <meta name="twitter:description" content="{% if seo_meta.og_description %}{{ seo_meta.og_description }}{% elif seo_meta.description %}{{ seo_meta.description }}{% else %}Smart, durable farm machinery and irrigation — engineered for working farms.{% endif %}">
+  <meta name="twitter:image" content="{% if seo_meta.og_image %}{{ seo_meta.og_image.url }}{% else %}{{ request.scheme }}://{{ request.get_host }}{% static 'core/img/og/og-default.png' %}{% endif %}">
+
+  <link rel="preconnect" href="https://rsms.me/">
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+  <link rel="stylesheet" href="{% static 'core/css/site.css' %}">
+
+  <link rel="icon" href="{% static 'favicon.ico' %}">
+
+  {% block extra_head %}{% endblock %}
+
+  {% if seo_meta.extra_json_ld %}
+    <script type="application/ld+json">{{ seo_meta.extra_json_ld|safe }}</script>
+  {% endif %}
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a href="/" class="logo" aria-label="Crosfield Agro — home">
+        <img src="{% static 'core/img/logo/light_logo.png' %}" alt="Crosfield Agro"
+             width="200" height="51" class="logo__img">
+      </a>
+
+      <nav class="site-nav" aria-label="Primary">
+        <a href="{% url 'core:page' slug='about-us' %}">About</a>
+        <a href="{% url 'products:product-list' %}">Products</a>
+        <a href="{% url 'industries:list' %}">Solutions</a>
+        <a href="{% url 'services:list' %}">Services</a>
+        <a href="{% url 'core:page' slug='global-presence' %}">Where we work</a>
+        <a href="{% url 'contact:form' %}">Contact</a>
+      </nav>
+
+      <div class="site-header__cta" style="display: flex; gap: 8px;">
+        <button class="cart-trigger" type="button"
+                aria-label="Open cart drawer ({{ cart_summary.item_count|default:0 }} item{{ cart_summary.item_count|default:0|pluralize }})"
+                aria-expanded="false" aria-controls="mini-cart"
+                data-cart-trigger>
+          <svg class="cart-trigger__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M3 3h2l2.4 12.3a2 2 0 0 0 2 1.7h7.7a2 2 0 0 0 2-1.6L21 8H6"/>
+            <circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/>
+          </svg>
+          <span>Cart</span>
+          {% if cart_summary and cart_summary.item_count %}
+            <span class="cart-trigger__count" data-cart-count>{{ cart_summary.item_count }}</span>
+          {% endif %}
+        </button>
+        <a class="button button-primary" href="{% url 'contact:form' %}">Request a Quote</a>
+      </div>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav">
+        Menu
+      </button>
+    </div>
+
+    <nav id="mobile-nav" class="mobile-nav" aria-label="Mobile primary">
+      <a href="{% url 'core:page' slug='about-us' %}">About</a>
+      <a href="{% url 'products:product-list' %}">Products</a>
+      <a href="{% url 'industries:list' %}">Solutions</a>
+      <a href="{% url 'services:list' %}">Services</a>
+      <a href="{% url 'core:page' slug='global-presence' %}">Where we work</a>
+      <a href="{% url 'contact:form' %}">Contact</a>
+      <a class="button button-primary" style="margin-top:12px" href="{% url 'contact:form' %}">Request a Quote</a>
+    </nav>
+  </header>
+
+  <main id="main" role="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="site-footer__grid">
+        <div>
+          <h4>Company</h4>
+          <a href="{% url 'core:page' slug='about-us' %}">About Us</a>
+          <a href="{% url 'core:page' slug='leadership-team' %}">Leadership</a>
+          <a href="{% url 'core:page' slug='our-history' %}">Our History</a>
+          <a href="{% url 'careers:list' %}">Careers</a>
+          <a href="{% url 'contact:form' %}">Contact</a>
+        </div>
+        <div>
+          <h4>Capabilities</h4>
+          <a href="{% url 'core:page' slug='manufacturing-process' %}">Local manufacturing</a>
+          <a href="{% url 'core:page' slug='research-development' %}">Field R&amp;D</a>
+          <a href="{% url 'core:page' slug='quality-standards' %}">Quality &amp; durability</a>
+          <a href="{% url 'core:page' slug='infrastructure' %}">Service network</a>
+          <a href="{% url 'core:page' slug='sustainability' %}">Water &amp; energy</a>
+        </div>
+        <div>
+          <h4>Catalog</h4>
+          <a href="{% url 'products:product-list' %}">Machinery &amp; equipment</a>
+          <a href="{% url 'industries:list' %}">Solutions by farm type</a>
+          <a href="{% url 'services:list' %}">On-site services</a>
+          <a href="{% url 'blog:list' %}">Field notes</a>
+          <a href="{% url 'media_center:index' %}">News &amp; press</a>
+          <a href="{% url 'orders:track' %}">Track order</a>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <a href="{% url 'core:page' slug='privacy-policy' %}">Privacy Policy</a>
+          <a href="{% url 'core:page' slug='terms-conditions' %}">Terms &amp; Conditions</a>
+          <a href="{% url 'core:page' slug='cookie-policy' %}">Cookie Policy</a>
+          <a href="{% url 'core:page' slug='disclaimer' %}">Disclaimer</a>
+          <a href="{% url 'core:page' slug='site-map' %}">Site Map</a>
+        </div>
+        <div>
+          <h4>Follow us</h4>
+          <ul class="site-footer__social" role="list">
+            <li>
+              <a href="https://www.facebook.com/crosfieldagro" target="_blank" rel="noopener me" aria-label="Crosfield Agro on Facebook">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+                  <path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1V9.9H7.7V13h2.7v8h3.1z"/>
+                </svg>
+                <span>Facebook</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://twitter.com/CrosfieldC" target="_blank" rel="noopener me" aria-label="Crosfield Agro on X (Twitter)">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.451-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+                </svg>
+                <span>X (Twitter)</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.linkedin.com/in/cros-field-531985199/" target="_blank" rel="noopener me" aria-label="Crosfield Agro on LinkedIn">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+                  <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM0 8h5v16H0V8zm7.5 0H12v2.2h.07c.66-1.2 2.27-2.5 4.68-2.5 5 0 5.92 3.3 5.92 7.6V24h-5v-7.1c0-1.7 0-3.9-2.4-3.9s-2.7 1.8-2.7 3.8V24h-5V8z"/>
+                </svg>
+                <span>LinkedIn</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.youtube.com/channel/UCAGxNsvOlpzl74-tPDWYscQ" target="_blank" rel="noopener me" aria-label="Crosfield Agro on YouTube">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+                  <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31.2 31.2 0 0 0 0 12a31.2 31.2 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.2 31.2 0 0 0 24 12a31.2 31.2 0 0 0-.5-5.8zM9.6 15.6V8.4l6.2 3.6-6.2 3.6z"/>
+                </svg>
+                <span>YouTube</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer__bottom">
+        <span class="site-footer__brand">
+          <img src="{% static 'core/img/logo/light_logo.png' %}" alt="Crosfield Agro"
+               width="160" height="41" class="site-footer__logo">
+          &copy; {% now "Y" %} All rights reserved.
+        </span>
+        <span>Lahore · New York · Tashkent · Lagos · Kabul</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WhatsApp Click-to-Chat. wa.me/<E.164-no-plus>?text=<urlencoded> works on
+       both mobile (opens WhatsApp app) and desktop (opens web.whatsapp.com). -->
+  <a class="wa-fab"
+     href="https://wa.me/923008403154?text=Hello%20Crosfield%20Agro%2C%20I%20have%20a%20question%20about%20your%20products."
+     target="_blank" rel="noopener"
+     aria-label="Chat with Crosfield Agro on WhatsApp">
+    <svg class="wa-fab__icon" viewBox="0 0 32 32" width="28" height="28" fill="currentColor" aria-hidden="true">
+      <path d="M16 .395c-8.836 0-16 7.163-16 16 0 2.825.738 5.59 2.143 8.025L.057 31.605l7.385-1.937A15.94 15.94 0 0 0 16 32.395c8.836 0 16-7.163 16-16s-7.164-16-16-16zm0 29.275a13.27 13.27 0 0 1-6.762-1.853l-.485-.288-4.387 1.15 1.172-4.275-.316-.5a13.246 13.246 0 0 1-2.022-7.034c0-7.34 5.972-13.312 13.312-13.312s13.312 5.973 13.312 13.312-5.972 13.313-13.312 13.313zm7.293-9.967c-.4-.2-2.365-1.167-2.732-1.3-.366-.134-.633-.2-.9.2-.266.4-1.033 1.3-1.266 1.567-.233.266-.466.3-.866.1-.4-.2-1.69-.624-3.222-1.99-1.19-1.062-1.994-2.374-2.227-2.774-.233-.4-.025-.617.176-.817.182-.18.4-.467.6-.7.2-.234.266-.4.4-.667.133-.267.067-.5-.034-.7-.1-.2-.9-2.167-1.233-2.967-.324-.78-.655-.674-.9-.687-.233-.012-.5-.014-.766-.014-.267 0-.7.1-1.067.5-.367.4-1.4 1.367-1.4 3.334s1.434 3.867 1.634 4.134c.2.267 2.82 4.307 6.832 6.043.955.412 1.7.658 2.282.842.958.305 1.83.262 2.518.159.768-.115 2.365-.967 2.7-1.9.333-.934.333-1.734.233-1.9-.1-.167-.367-.267-.766-.467z"/>
+    </svg>
+    <span class="wa-fab__label">Chat on WhatsApp</span>
+  </a>
+
+  <div class="mini-cart-overlay" data-cart-overlay aria-hidden="true"></div>
+  <aside id="mini-cart" class="mini-cart" aria-label="Cart" aria-hidden="true" tabindex="-1">
+    <header class="mini-cart__header">
+      <strong style="font-family: var(--font-serif); color: var(--color-green-900);">Cart</strong>
+      <button class="mini-cart__close" type="button" aria-label="Close cart" data-cart-close>×</button>
+    </header>
+    <div class="mini-cart__body" data-cart-body>
+      {% include "cart/_mini_cart.html" with summary=cart_summary %}
+    </div>
+  </aside>
+
+  <script>
+    // Mobile nav toggle
+    (function () {
+      var btn = document.querySelector('.nav-toggle');
+      var nav = document.getElementById('mobile-nav');
+      if (!btn || !nav) return;
+      btn.addEventListener('click', function () {
+        var open = nav.classList.toggle('is-open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    })();
+
+    // Mini-cart drawer
+    (function () {
+      var trigger = document.querySelector('[data-cart-trigger]');
+      var overlay = document.querySelector('[data-cart-overlay]');
+      var drawer  = document.getElementById('mini-cart');
+      var closer  = document.querySelector('[data-cart-close]');
+      var body    = document.querySelector('[data-cart-body]');
+      if (!trigger || !drawer || !overlay) return;
+
+      function open() {
+        drawer.classList.add('is-open');
+        overlay.classList.add('is-open');
+        drawer.setAttribute('aria-hidden', 'false');
+        overlay.setAttribute('aria-hidden', 'false');
+        trigger.setAttribute('aria-expanded', 'true');
+        drawer.focus();
+        document.documentElement.style.overflow = 'hidden';
+      }
+      function close() {
+        drawer.classList.remove('is-open');
+        overlay.classList.remove('is-open');
+        drawer.setAttribute('aria-hidden', 'true');
+        overlay.setAttribute('aria-hidden', 'true');
+        trigger.setAttribute('aria-expanded', 'false');
+        document.documentElement.style.overflow = '';
+      }
+
+      trigger.addEventListener('click', open);
+      closer && closer.addEventListener('click', close);
+      overlay.addEventListener('click', close);
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && drawer.classList.contains('is-open')) close();
+      });
+
+      // Refresh drawer contents after a same-tab add-to-cart flow.
+      window.refreshMiniCart = function () {
+        fetch("{% url 'cart:fragment' %}", {credentials: 'same-origin'})
+          .then(function (r) { return r.text(); })
+          .then(function (html) {
+            if (body) body.innerHTML = html;
+            // Update badge by extracting count from fragment
+            var match = html.match(/(\d+)\s+item/);
+            var countBadge = document.querySelector('[data-cart-count]');
+            var count = match ? parseInt(match[1], 10) : 0;
+            if (count > 0) {
+              if (countBadge) {
+                countBadge.textContent = count;
+              } else {
+                var b = document.createElement('span');
+                b.className = 'cart-trigger__count';
+                b.setAttribute('data-cart-count', '');
+                b.textContent = count;
+                trigger.appendChild(b);
+              }
+            } else if (countBadge) {
+              countBadge.remove();
+            }
+          });
+      };
+    })();
+  </script>
+
+  {% block extra_body %}{% endblock %}
+
+  <script defer src="{% static 'analytics/beacon.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Order {{ order.number }} | Crosfield Agro Pakistan{% endblock %}
+{% block meta_description %}Order {{ order.number }} — Crosfield Agro Pakistan.{% endblock %}
+{% block canonical %}<meta name="robots" content="noindex,follow">{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    {% if request.user.is_authenticated %}<li><a href="{% url 'orders:list' %}">Orders</a></li>{% endif %}
+    <li aria-current="page">{{ order.number }}</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">Order</p>
+    <h1>{{ order.number }}</h1>
+    <p>
+      Placed {{ order.created_at|date:"j F Y" }} ·
+      <span class="status-pill status-pill--{{ order.current_status }}"
+            style="vertical-align: middle;">
+        {{ order.get_cached_status_display }}
+      </span>
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid grid--3" style="grid-template-columns: 2fr 1fr; align-items: start;">
+      <div>
+        <div class="card">
+          <p class="eyebrow">Line items</p>
+          <table class="commerce-table" style="margin: 8px 0 0;">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th class="numeric">Qty</th>
+                <th class="numeric">Unit</th>
+                <th class="numeric">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in order.items.all %}
+                <tr>
+                  <td data-label="Product">
+                    <strong>{{ item.product_name }}</strong>
+                    <p class="help" style="margin: 4px 0 0;">SKU: {{ item.sku }}</p>
+                  </td>
+                  <td class="numeric" data-label="Qty">{{ item.quantity }}</td>
+                  <td class="numeric" data-label="Unit">{{ order.currency }} {{ item.unit_price }}</td>
+                  <td class="numeric" data-label="Total"
+                      style="font-weight: 600; color: var(--color-green-900);">
+                    {{ order.currency }} {{ item.line_total }}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+              <tr><td colspan="3">Subtotal</td><td class="numeric">{{ order.currency }} {{ order.subtotal }}</td></tr>
+              <tr><td colspan="3">Shipping</td><td class="numeric">{{ order.currency }} {{ order.shipping_total }}</td></tr>
+              <tr><td colspan="3">Tax</td><td class="numeric">{{ order.currency }} {{ order.tax_total }}</td></tr>
+              {% if order.discount_total %}
+                <tr><td colspan="3">Discount</td><td class="numeric">-{{ order.currency }} {{ order.discount_total }}</td></tr>
+              {% endif %}
+              <tr>
+                <td colspan="3" class="grand-total">Grand total</td>
+                <td class="numeric grand-total">{{ order.currency }} {{ order.grand_total }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <div class="card" style="margin-top: 24px;">
+          <p class="eyebrow">Order history</p>
+          <ol class="timeline" style="margin-top: 16px;">
+            {% for ev in order.events.all %}
+              <li>
+                <time datetime="{{ ev.created_at|date:'c' }}">
+                  {{ ev.created_at|date:"j M Y, H:i" }}
+                </time>
+                <strong>{{ ev.get_event_type_display }}</strong>
+                {% if ev.metadata.tracking_number %}
+                  <p class="help" style="margin: 4px 0 0;">
+                    Tracking: <code>{{ ev.metadata.tracking_number }}</code>
+                    {% if ev.metadata.carrier %} · {{ ev.metadata.carrier }}{% endif %}
+                  </p>
+                {% endif %}
+                {% if ev.metadata.reason %}
+                  <p class="help" style="margin: 4px 0 0;">Reason: {{ ev.metadata.reason }}</p>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ol>
+        </div>
+      </div>
+
+      <aside>
+        <div class="card card--accent">
+          <p class="eyebrow">Order details</p>
+          <dl class="facts" style="grid-template-columns: 1fr;">
+            <dt>Order number</dt><dd><code>{{ order.number }}</code></dd>
+            <dt>Placed</dt><dd>{{ order.created_at|date:"j F Y, H:i" }}</dd>
+            <dt>Status</dt><dd>
+              <span class="status-pill status-pill--{{ order.current_status }}">
+                {{ order.get_cached_status_display }}
+              </span>
+            </dd>
+            <dt>Customer email</dt><dd>{{ order.email }}</dd>
+            <dt>Total</dt><dd><strong>{{ order.currency }} {{ order.grand_total }}</strong></dd>
+          </dl>
+        </div>
+
+        <div class="card" style="margin-top: 16px;">
+          <p class="eyebrow">Shipping to</p>
+          <address style="font-style: normal; line-height: 1.6; margin-top: 8px;">
+            <strong>{{ order.shipping_address.name }}</strong><br>
+            {{ order.shipping_address.line1 }}<br>
+            {% if order.shipping_address.line2 %}{{ order.shipping_address.line2 }}<br>{% endif %}
+            {{ order.shipping_address.city }} {{ order.shipping_address.postal_code }}<br>
+            {{ order.shipping_address.country }}
+            {% if order.shipping_address.phone %}
+              <br><span class="help">{{ order.shipping_address.phone }}</span>
+            {% endif %}
+          </address>
+        </div>
+
+        {% if order.invoice %}
+          <div class="card" style="margin-top: 16px;">
+            <p class="eyebrow">{{ order.invoice.document_type }}</p>
+            <p style="margin: 8px 0;"><code>{{ order.invoice.number }}</code></p>
+            {% if order.invoice.pdf %}
+              <a class="button button-secondary" style="width: 100%;"
+                 href="{% url 'invoices:download' order.invoice.number %}?token={{ order.uuid }}">Download PDF</a>
+            {% else %}
+              <p class="help">PDF is being generated. Refresh shortly or check back later.</p>
+            {% endif %}
+            {% if not order.invoice.is_paid %}
+              <p class="help" style="margin-top: 8px;">
+                Proforma — re-issued as a tax invoice once payment is confirmed.
+              </p>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <div class="card" style="margin-top: 16px;">
+          <p class="eyebrow">Tracking</p>
+          <p>Share a public tracking link with anyone — they'll need only this order number.</p>
+          <a class="button button-secondary" style="width: 100%;"
+             href="{% url 'orders:track-detail' order.number %}">
+            Open public tracking page
+          </a>
+        </div>
+
+        <div class="card" style="margin-top: 16px;">
+          <p class="eyebrow">Need help?</p>
+          <p>Questions about this order? Our account team responds within one business day.</p>
+          <a href="{% url 'contact:form' %}">Contact account team →</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+{% endblock %}

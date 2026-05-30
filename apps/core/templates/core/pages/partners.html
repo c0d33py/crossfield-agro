@@ -1,0 +1,40 @@
+{% extends "core/_page.html" %}
+
+{% block page_body %}
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Partner categories</p>
+    <h2>Who we work with.</h2>
+    <div class="grid grid--2" style="margin-top: 32px;">
+      <article class="card">
+        <h3>Technology partners</h3>
+        <p>Equipment vendors, instrumentation suppliers, and process technology licensors that underpin our manufacturing capability.</p>
+      </article>
+      <article class="card">
+        <h3>Research partners</h3>
+        <p>Pakistani agricultural universities and research institutes that collaborate on field trials and method validation.</p>
+      </article>
+      <article class="card">
+        <h3>Distribution partners</h3>
+        <p>Regional distributors that extend our market reach across Pakistan and selected export markets.</p>
+      </article>
+      <article class="card">
+        <h3>Supply-chain partners</h3>
+        <p>Raw material suppliers qualified through our supplier-approval programme; logistics providers for outbound shipments.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--surface">
+  <div class="container">
+    <p class="eyebrow">Become a partner</p>
+    <h2>Partnership enquiries.</h2>
+    <p class="lead" style="max-width: 70ch;">
+      We're open to new technology, research, and distribution partnerships where the
+      fit is clear. Use the contact form and route the enquiry to "Partnership."
+    </p>
+    <a class="button button-secondary" href="{% url 'contact:form' %}">Contact us</a>
+  </div>
+</section>
+{% endblock %}

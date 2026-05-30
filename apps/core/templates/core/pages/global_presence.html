@@ -1,0 +1,104 @@
+{% extends "core/_page.html" %}
+
+{% block page_body %}
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Pakistan</p>
+    <h2>Our home market.</h2>
+    <p class="lead" style="max-width: 70ch;">
+      Crosfield Agro is headquartered at Thokar Niaz Baig on Multan Road in Lahore, with
+      seven branch offices putting sales, service and parts within driving distance of most
+      farms in Punjab, KPK and Sindh.
+    </p>
+    <div class="grid grid--3" style="margin-top: 32px;">
+      <article class="card">
+        <h3>Lahore (Head Office)</h3>
+        <p>Opposite Areeb Petrol Pump, Near NAB Office, Multan Road, Thokar Niaz Baig.</p>
+        <p><a href="tel:+923008403154">+92 300 8403154</a></p>
+      </article>
+      <article class="card">
+        <h3>Lahore Factory</h3>
+        <p>22 KM Main Multan Road, Chota Mohanwal, Badhupura Stop.</p>
+        <p><a href="tel:+923000605153">+92 300 0605 153</a></p>
+      </article>
+      <article class="card">
+        <h3>Multan</h3>
+        <p>Office #1, Garden Market, Bahawalpur Bypass.</p>
+        <p><a href="tel:+923000605139">+92 300 0605 139</a></p>
+      </article>
+      <article class="card">
+        <h3>Sargodha</h3>
+        <p>Jamia Mehmudia Road, Ibn-e-Sina Market, Kenchi Mor.</p>
+        <p><a href="tel:+923000605157">+92 300 0605 157</a></p>
+      </article>
+      <article class="card">
+        <h3>Chiniot</h3>
+        <p>Al Meezan Kanta, Lahore Road, Rasheedabad Chungi 3.</p>
+        <p><a href="tel:+923000605149">+92 300 0605 149</a></p>
+      </article>
+      <article class="card">
+        <h3>Jhang</h3>
+        <p>Pioneer Laser Land Leveler, Near Truck Ada, Jhang–Sargodha Road.</p>
+        <p><a href="tel:+923008403214">+92 300 8403 214</a></p>
+      </article>
+      <article class="card">
+        <h3>Dera Ismail Khan</h3>
+        <p>Model Farm Service Center, Near Bab Dera, Bannu Road.</p>
+        <p><a href="tel:+923000605133">+92 300 0605 133</a></p>
+      </article>
+      <article class="card">
+        <h3>Moro, Sindh</h3>
+        <p>Office #2, Solar Market, Main Hyderabad Road.</p>
+        <p><a href="tel:+923073000338">+92 307 3000 338</a></p>
+      </article>
+      <article class="card">
+        <h3>Shahdadpur, Sindh</h3>
+        <p>District Sanghar.</p>
+        <p><a href="tel:+923000605153">+92 300 0605 153</a></p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--surface">
+  <div class="container">
+    <p class="eyebrow">International offices</p>
+    <h2>Four countries beyond Pakistan.</h2>
+    <div class="grid grid--3" style="margin-top: 32px;">
+      <article class="card">
+        <h3>United States</h3>
+        <p>40 Rabro Drive, Hauppauge, NY 11788.</p>
+        <p><a href="tel:+19175826300">+1 (917) 582-6300</a></p>
+      </article>
+      <article class="card">
+        <h3>Uzbekistan</h3>
+        <p>Sarykul Street, Building 10/1, Flat 1, Tashkent.</p>
+        <p>Telegram: <a href="tel:+998949897064">+998 94 989 70 64</a></p>
+      </article>
+      <article class="card">
+        <h3>Nigeria</h3>
+        <p>West African base for levelers, tractors and irrigation.</p>
+        <p><a href="mailto:info@crosfield.co">info@crosfield.co</a></p>
+      </article>
+      <article class="card">
+        <h3>Afghanistan</h3>
+        <p>Equipment supply and reconstruction-project support.</p>
+        <p><a href="mailto:info@crosfield.co">info@crosfield.co</a></p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Partners</p>
+    <h2>Distribution and brand partnerships.</h2>
+    <p>
+      Beyond our own catalogue, we distribute selected international brands that complement
+      what we manufacture locally — chosen for long-term parts availability and on-the-ground
+      serviceability rather than badge value.
+    </p>
+    <a class="button button-secondary" href="{% url 'core:page' slug='partners' %}">View partners</a>
+  </div>
+</section>
+{% endblock %}

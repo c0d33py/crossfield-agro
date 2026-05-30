@@ -1,0 +1,106 @@
+{% extends "core/_page.html" %}
+{% load static %}
+
+{% block page_body %}
+<section class="section">
+  <div class="container">
+    <div class="grid grid--2" style="align-items: start;">
+      <div>
+        <p class="eyebrow">Who we are</p>
+        <h2>An equipment company built around the working farm.</h2>
+        <p class="lead">
+          Crosfield Agro has been part of Pakistani agriculture since 1990 — starting with
+          laser land leveling, growing into a full line of farm machinery, irrigation, seeds,
+          greenhouses and solar power. We design, assemble and support equipment that has to
+          stand up to long days, dust, water and the way farms actually operate.
+        </p>
+        <p>
+          We sell to owner-operators, contract leveling crews, commercial growers, cooperatives
+          and government irrigation projects. What ties them together is the same need: kit
+          that runs, parts when something breaks, and someone on the phone who has used the
+          machine themselves.
+        </p>
+      </div>
+      <div>
+        <dl class="facts">
+          <dt>Founded</dt><dd>1990, Lahore</dd>
+          <dt>Headquarters</dt><dd>Thokar Niaz Baig, Multan Road, Lahore</dd>
+          <dt>Pakistan branches</dt><dd>Multan, Sargodha, Chiniot, Jhang, D.I. Khan, Moro, Shahdadpur</dd>
+          <dt>International offices</dt><dd>United States, Uzbekistan, Nigeria, Afghanistan</dd>
+          <dt>Product lines</dt><dd>Levelers, tractors, irrigation, seeds, greenhouses, solar</dd>
+          <dt>Support</dt><dd>24/7 customer assistance; on-site training</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Management team</p>
+    <h2>The people running Crosfield.</h2>
+    <div class="grid grid--3 team-grid" style="margin-top: 32px;">
+      <article class="team-card">
+        <img class="team-card__photo" src="{% static 'core/img/team/ahmad-nawaz.jpg' %}"
+             alt="Portrait of Ahmad Nawaz" loading="lazy" width="320" height="320">
+        <h3>Ahmad Nawaz</h3>
+        <p class="team-card__role">Director</p>
+        <p>Founded Crosfield Agro in 2003 and led the expansion to more than 50 branches and offices across five countries.</p>
+      </article>
+      <article class="team-card">
+        <img class="team-card__photo" src="{% static 'core/img/team/teepu-sheikh.jpg' %}"
+             alt="Portrait of Teepu Sheikh" loading="lazy" width="320" height="320">
+        <h3>Teepu Sheikh</h3>
+        <p class="team-card__role">Managing Partner</p>
+        <p>Responsible for major corporate decisions, group growth and international operations across the company's overseas offices.</p>
+      </article>
+      <article class="team-card">
+        <img class="team-card__photo" src="{% static 'core/img/team/muhammad-imran.jpg' %}"
+             alt="Portrait of Muhammad Imran" loading="lazy" width="320" height="320">
+        <h3>Muhammad Imran</h3>
+        <p class="team-card__role">Chief Executive Officer</p>
+        <p>A business-administration graduate who moved into agriculture and helped scale the operation to its current branch network.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--surface">
+  <div class="container">
+    <p class="eyebrow">Explore</p>
+    <h2>Get to know the company.</h2>
+    <div class="grid grid--3" style="margin-top: 32px;">
+      <article class="card">
+        <h3>Company overview</h3>
+        <p>What we sell, how we sell it, and the markets we cover.</p>
+        <a href="{% url 'core:page' slug='company-overview' %}">Read more →</a>
+      </article>
+      <article class="card">
+        <h3>Mission &amp; vision</h3>
+        <p>Why we're in this business and what we're building toward.</p>
+        <a href="{% url 'core:page' slug='mission-vision' %}">Read more →</a>
+      </article>
+      <article class="card">
+        <h3>Leadership</h3>
+        <p>The people accountable for product, service and operations.</p>
+        <a href="{% url 'core:page' slug='leadership-team' %}">Meet the team →</a>
+      </article>
+      <article class="card">
+        <h3>Our history</h3>
+        <p>From the first laser-leveled fields in Punjab to today's product range.</p>
+        <a href="{% url 'core:page' slug='our-history' %}">Timeline →</a>
+      </article>
+      <article class="card">
+        <h3>Message from the CEO</h3>
+        <p>Direct words on what matters to us — and what doesn't.</p>
+        <a href="{% url 'core:page' slug='message-from-ceo' %}">Read →</a>
+      </article>
+      <article class="card">
+        <h3>Where we work</h3>
+        <p>Branches, international offices, and the regions we ship to.</p>
+        <a href="{% url 'core:page' slug='global-presence' %}">Locations →</a>
+      </article>
+    </div>
+  </div>
+</section>
+{% endblock %}

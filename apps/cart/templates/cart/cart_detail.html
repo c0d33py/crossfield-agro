@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}Cart | Crosfield Agro Pakistan{% endblock %}
+{% block meta_description %}Your shopping cart.{% endblock %}
+{% block canonical %}<meta name="robots" content="noindex,follow">{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'core:home' %}">Home</a></li>
+    <li aria-current="page">Cart</li>
+  </ol>
+</nav>
+
+<section class="hero hero--compact">
+  <div class="container">
+    <p class="eyebrow">Your order</p>
+    <h1>
+      {% if summary and summary.lines %}
+        Cart — {{ summary.item_count }} item{{ summary.item_count|pluralize }}
+      {% else %}
+        Your cart is empty.
+      {% endif %}
+    </h1>
+    <p>
+      {% if summary and summary.lines %}
+        Review quantities below, then proceed to checkout. Prices recalculate live; taxes and shipping are added at checkout.
+      {% else %}
+        Browse our catalogue to add fertilizers, agrochemicals, or specialty inputs.
+      {% endif %}
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    {% if messages %}
+      <div role="status" aria-live="polite" style="margin-bottom: 24px;">
+        {% for message in messages %}
+          <div class="card card--accent" style="border-color: {% if message.tags == 'error' %}#B0211D{% else %}var(--color-gold-600){% endif %};">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if summary and summary.lines %}
+      <div class="grid grid--3" style="grid-template-columns: 2fr 1fr; align-items: start;">
+        <div>
+          <table class="commerce-table" aria-label="Cart line items">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th class="numeric">Unit price</th>
+                <th>Quantity</th>
+                <th class="numeric">Line total</th>
+                <th><span class="visually-hidden">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for line in summary.lines %}
+                <tr>
+                  <td data-label="Product">
+                    <a href="{{ line.item.product.get_absolute_url }}"
+                       style="font-weight: 600; color: var(--color-green-900); text-decoration: none;">
+                      {{ line.item.product.name }}
+                    </a>
+                    {% if line.item.variant %}
+                      <p class="help" style="margin: 4px 0 0;">{{ line.item.variant.name }}</p>
+                    {% endif %}
+                    <p class="help" style="margin: 4px 0 0;">SKU: {{ line.item.variant.sku|default:line.item.product.sku }}</p>
+                  </td>
+                  <td class="numeric" data-label="Unit price">{{ summary.currency }} {{ line.unit_price }}</td>
+                  <td data-label="Quantity">
+                    <form method="post" action="{% url 'cart:update' line.item.id %}"
+                          style="display: flex; gap: 6px; align-items: center;">
+                      {% csrf_token %}
+                      <label for="qty-{{ line.item.id }}" class="visually-hidden">Quantity</label>
+                      <input id="qty-{{ line.item.id }}" type="number" name="quantity"
+                             value="{{ line.item.quantity }}" min="1"
+                             style="width: 70px; min-height: 36px; padding: 6px 8px;
+                                    border: 1px solid var(--color-rule); border-radius: 4px;">
+                      <button class="button button-ghost" type="submit"
+                              style="padding: 6px 10px; min-height: 36px; font-size: 0.85rem;">
+                        Update
+                      </button>
+                    </form>
+                  </td>
+                  <td class="numeric" data-label="Line total"
+                      style="font-weight: 600; color: var(--color-green-900);">
+                    {{ summary.currency }} {{ line.line_total }}
+                  </td>
+                  <td data-label="Remove">
+                    <form method="post" action="{% url 'cart:remove' line.item.id %}">
+                      {% csrf_token %}
+                      <button class="button button-ghost" type="submit"
+                              style="padding: 6px 10px; min-height: 36px; font-size: 0.85rem; color: #B0211D;"
+                              aria-label="Remove {{ line.item.product.name }}">
+                        Remove
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+            <a class="button button-secondary" href="{% url 'products:product-list' %}">← Continue shopping</a>
+            <form method="post" action="{% url 'cart:clear' %}" style="display: inline;">
+              {% csrf_token %}
+              <button type="submit" class="button button-ghost" style="color: #B0211D;">Clear cart</button>
+            </form>
+          </div>
+        </div>
+
+        <aside>
+          <div class="card card--accent">
+            <p class="eyebrow">Order summary</p>
+            <table class="commerce-table" style="margin: 0;">
+              <tbody>
+                <tr>
+                  <td>Subtotal</td>
+                  <td class="numeric">{{ summary.currency }} {{ summary.subtotal }}</td>
+                </tr>
+                <tr>
+                  <td>Shipping</td>
+                  <td class="numeric help">Calculated at checkout</td>
+                </tr>
+                <tr>
+                  <td>Tax</td>
+                  <td class="numeric help">Calculated at checkout</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td class="grand-total">Estimated total</td>
+                  <td class="numeric grand-total">{{ summary.currency }} {{ summary.subtotal }}</td>
+                </tr>
+              </tfoot>
+            </table>
+
+            <a href="{% url 'checkout:start' %}" class="button button-primary"
+               style="width: 100%; margin-top: 16px;">
+              Proceed to Checkout
+            </a>
+
+            <p class="help" style="margin-top: 12px; font-size: 0.8rem;">
+              Prices include manufacturing and packaging. Shipping and applicable
+              taxes are recalculated at checkout from your delivery address.
+            </p>
+          </div>
+
+          <div class="card" style="margin-top: 16px;">
+            <p class="eyebrow">Need help?</p>
+            <p>Sales response within one business day. Technical questions routed to a named specialist.</p>
+            <a href="{% url 'contact:form' %}">Contact sales →</a>
+          </div>
+        </aside>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-state__icon" aria-hidden="true">🛒</div>
+        <h2>Your cart is empty.</h2>
+        <p>Browse the catalogue to add products. Cart contents persist for 14 days even before you log in.</p>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <a class="button button-primary" href="{% url 'products:product-list' %}">Browse Products</a>
+          <a class="button button-secondary" href="{% url 'industries:list' %}">Shop by Industry</a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_body %}
+<style>
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+</style>
+{% endblock %}
